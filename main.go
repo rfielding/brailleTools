@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"time"
-	//	"math/rand"
 )
 
 const (
@@ -135,29 +134,29 @@ func (b *BrailleTerminal) RenderLine(withCursor bool) {
 	fmt.Printf("\r")
 	for i := 0; i < b.TermLine; i++ {
 		cursor := 0
-		if withCursor && b.CursorX == i && (b.Timer%2) == 0 {
-			cursor = d7 | d8
+		if withCursor && b.CursorX == i {
+			if b.EditMode == false {
+				if b.Timer%2 == 0 {
+					cursor = d7
+				} else {
+					cursor = d8
+				}
+			} else {
+				if (b.Timer % 2) == 0 {
+					cursor = d7 | d8
+				}
+			}
 		}
 		fmt.Printf("%c", rune((0x2800+b.Output[b.CursorY][i])|cursor))
 	}
 }
 
-func (b *BrailleTerminal) kb() chan rune {
-	ret := make(chan rune, 0)
-	if err := keyboard.Open(); err != nil {
+func (b *BrailleTerminal) kb() <-chan keyboard.KeyEvent {
+	evs, err := keyboard.GetKeys(10)
+	if err != nil {
 		panic(err)
 	}
-	go func() {
-		for {
-			char, _, err := keyboard.GetSingleKey()
-			if err != nil {
-				panic(err)
-			}
-			ret <- char
-		}
-		_ = keyboard.Close()
-	}()
-	return ret
+	return evs
 }
 
 func (b *BrailleTerminal) Put(c rune) {
@@ -187,32 +186,26 @@ func (b *BrailleTerminal) ClearLine() {
 	}
 }
 
-func (b *BrailleTerminal) Handle(c rune) {
-	//b.Errf("%c",c)
-	fmt.Printf("%c",c)
-	if b.EditMode {
-		switch c {
-		case '`':
-			b.EditMode = false
-		default:
-			b.Puts(fmt.Sprintf("%c", c))
-		}
-	} else {
-		switch c {
-		case 'i':
-			b.EditMode = true
-		case 'q':
-			b.Quit = true
-		case 'h':
-			b.CursorLeft()
-		case 'l':
-			b.CursorRight()
-		case 'k':
-			b.CursorUp()
-		case 'j':
-			b.CursorDown()
-		case ' ':
-			b.CursorRight()
+func (b *BrailleTerminal) Handle(c keyboard.KeyEvent) {
+	switch c.Key {
+	case keyboard.KeyArrowUp:
+		b.CursorUp()
+	case keyboard.KeyArrowDown:
+		b.CursorDown()
+	case keyboard.KeyArrowLeft:
+		b.CursorLeft()
+	case keyboard.KeyArrowRight:
+		b.CursorRight()
+	case keyboard.KeyEsc:
+		b.EditMode = !b.EditMode
+	default:
+		if b.EditMode {
+			b.Puts(fmt.Sprintf("%c", c.Rune))
+		} else {
+			switch c.Rune {
+			case 'q':
+				b.Quit = true
+			}
 		}
 	}
 }
@@ -229,8 +222,8 @@ func (b *BrailleTerminal) Render() {
 	// Handle keys if available, or tick
 	for b.Quit == false {
 		select {
-		case c := <-kb:
-			b.Handle(c)
+		case ev := <-kb:
+			b.Handle(ev)
 		case <-time.After(250 * time.Millisecond):
 		}
 		b.RenderLine(true)
