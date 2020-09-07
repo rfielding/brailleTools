@@ -9,23 +9,26 @@ import (
 )
 
 const (
-	d1 = 1
-	d2 = 2
-	d3 = 4
-	d4 = 8
-	d5 = 16
-	d6 = 32
-	d7 = 64
-	d8 = 128
+	d1       = 1
+	d2       = 2
+	d3       = 4
+	d4       = 8
+	d5       = 16
+	d6       = 32
+	d7       = 64
+	d8       = 128
+	dNewLine = 256
 )
+
+type Cell int
 
 type BrailleTerminal struct {
 	Err      io.Writer
 	CursorX  int
 	CursorY  int
 	Timer    int
-	Output   [][]int
-	Table    []int
+	Output   [][]Cell
+	Table    []Cell
 	TermX    int
 	TermY    int
 	TermLine int
@@ -33,7 +36,40 @@ type BrailleTerminal struct {
 	EditMode bool
 }
 
+// This is for trivial 1-cell runes only
 func (b *BrailleTerminal) setupBrailleTable() {
+	b.Table[33] = d2|d3|d4|d6
+	b.Table[34] = d5
+	b.Table[35] = d3|d4|d5|d6
+	b.Table[36] = d1|d2|d4|d6
+	b.Table[37] = d1|d4|d6
+	b.Table[38] = d1|d2|d3|d4|d6
+	b.Table[39] = d3
+	b.Table[40] = d1|d2|d3|d5|d6
+	b.Table[41] = d2|d3|d4|d5|d6
+	b.Table[42] = d1|d6
+	b.Table[43] = d3|d4|d6
+	b.Table[44] = d6
+	b.Table[45] = d3|d6
+	b.Table[46] = d4|d6
+	b.Table[47] = d3|d4
+	b.Table[58] = d1|d5|d6
+	b.Table[59] = d5|d6
+	b.Table[60] = d1|d2|d6
+	b.Table[61] = d1|d2|d3|d4|d5|d6
+	b.Table[62] = d3|d4|d5
+	b.Table[63] = d1|d4|d5|d6
+	b.Table[64] = d4|d7
+	b.Table[91] = d2|d4|d6|d7
+	b.Table[92] = d1|d2|d5|d6|d7
+	b.Table[93] = d1|d2|d4|d5|d6|d7
+	b.Table[94] = d4|d5|d7
+	b.Table[95] = d4|d5|d6
+	b.Table[96] = d4
+	b.Table[123] = d2|d4|d6
+	b.Table[124] = d1|d2|d5|d6
+	b.Table[125] = d1|d2|d4|d5|d6
+	b.Table[126] = d4|d5
 	// a through j
 	b.Table[0+97] = d1
 	b.Table[1+97] = d1 | d2
@@ -85,11 +121,11 @@ func NewTerminal(termX, termLine, termY int, errLog string) *BrailleTerminal {
 		panic(err)
 	}
 	b.Err = berr
-	b.Table = make([]int, 256)
+	b.Table = make([]Cell, 256*256)
 	b.setupBrailleTable()
-	b.Output = make([][]int, b.TermY)
+	b.Output = make([][]Cell, b.TermY)
 	for y := 0; y < b.TermY; y++ {
-		b.Output[y] = make([]int, b.TermLine)
+		b.Output[y] = make([]Cell, b.TermLine)
 	}
 	return b
 }
@@ -147,7 +183,15 @@ func (b *BrailleTerminal) RenderLine(withCursor bool) {
 				}
 			}
 		}
-		fmt.Printf("%c", rune((0x2800+b.Output[b.CursorY][i])|cursor))
+		v := b.Output[b.CursorY][i] | Cell(cursor)
+		if b.Output[b.CursorY][i] == dNewLine {
+			if (b.Timer % 2) == 0 {
+				v = d8
+			} else {
+				v = 0
+			}
+		}
+		fmt.Printf("%c", rune((0x2800 + int(v))))
 	}
 }
 
@@ -162,9 +206,12 @@ func (b *BrailleTerminal) kb() <-chan keyboard.KeyEvent {
 func (b *BrailleTerminal) Put(c rune) {
 	if c == '\n' {
 		if b.CursorY+1 < b.TermY {
-			b.CursorX = 0
-			b.CursorY++
+			b.Output[b.CursorY][b.CursorX] = dNewLine
 		}
+		for i := b.CursorX + 1; i < b.TermX; i++ {
+			b.Output[b.CursorY][i] = 0
+		}
+		b.CursorNewline()
 	} else {
 		if b.CursorX+1 < b.TermX {
 			b.Output[b.CursorY][b.CursorX] = b.Table[c]
@@ -187,20 +234,40 @@ func (b *BrailleTerminal) ClearLine() {
 }
 
 func (b *BrailleTerminal) Handle(c keyboard.KeyEvent) {
+	b.Errf("key: %d rune: %c\n", c.Key, c.Rune)
 	switch c.Key {
 	case keyboard.KeyArrowUp:
 		b.CursorUp()
 	case keyboard.KeyArrowDown:
 		b.CursorDown()
 	case keyboard.KeyArrowLeft:
-		b.CursorLeft()
+		if b.CursorX == 0 && b.CursorY > 0 {
+			b.CursorY--
+			for i := 0; i < b.TermX; i++ {
+				if b.Output[b.CursorY][i] == dNewLine {
+					b.CursorX = i
+					break
+				}
+			}
+		} else {
+			b.CursorLeft()
+		}
 	case keyboard.KeyArrowRight:
-		b.CursorRight()
+		if b.Output[b.CursorY][b.CursorX] == dNewLine {
+			b.CursorNewline()
+		} else {
+			b.CursorRight()
+		}
 	case keyboard.KeyEsc:
 		b.EditMode = !b.EditMode
 	default:
 		if b.EditMode {
-			b.Puts(fmt.Sprintf("%c", c.Rune))
+			switch c.Key {
+			case keyboard.KeyEnter:
+				b.Puts("\n")
+			default:
+				b.Puts(fmt.Sprintf("%c", c.Rune))
+			}
 		} else {
 			switch c.Rune {
 			case 'q':
@@ -232,9 +299,8 @@ func (b *BrailleTerminal) Render() {
 }
 
 func main() {
-	b := NewTerminal(19, 19, 20, "BrailleTerminal.err.log")
-	b.Puts("test")
-	b.Puts("\n")
-	b.Puts("Decipher")
+	b := NewTerminal(19,19, 20, "BrailleTerminal.err.log")
+	b.EditMode = true
+	//b.Puts("In the beginning\nGod created\nthe heaven\nand the earth\n")
 	b.Render()
 }
