@@ -30,7 +30,7 @@ orca --disable=speech --replace
 Especially run this in its own window, as you may need to run `reset` to clean up ANSI escape sequences:
 
 ```
-go run main.go
+go run cmd/teeny/main.go
 ```
 
 > `ESC q` to get out
