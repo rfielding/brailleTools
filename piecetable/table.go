@@ -76,11 +76,32 @@ func (p *Pt) Read(b []byte) (int, error) {
 }
 
 func (p *Pt) Store(name string) (int64, error) {
+	// Save where we are at in the stream
+	at, err := p.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, err
+	}
+
+	// Open file to create
 	f, err := os.Create(name)
 	if err != nil {
 		return 0,err
 	}
-	return io.Copy(f, p)
+	defer f.Close()
+
+	// Rewind and write
+	p.Seek(0, io.SeekStart)
+	written, err := io.Copy(f, p)
+	if err != nil {
+		return written,err
+	}
+
+	// Restore cursur position
+	at, err = p.Seek(at, io.SeekStart)
+	if err != nil {
+		return at, err
+	}
+	return written, nil
 }
 
 func (p *Pt) Close() error {
@@ -88,5 +109,5 @@ func (p *Pt) Close() error {
 }
 
 func (p *Pt) Seek(n int64, whence int) (int64, error) {
-	return p.Seek(n, whence)
+	return p.Original.Seek(n, whence)
 }
