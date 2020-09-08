@@ -2,10 +2,10 @@ package piecetable_test
 
 import (
 	"fmt"
-	"os"
-	"io"
-	"testing"
 	"github.com/rfielding/teeny/piecetable"
+	"io"
+	"os"
+	"testing"
 )
 
 func TestPtOpen(t *testing.T) {
@@ -43,7 +43,6 @@ func TestPtOpen(t *testing.T) {
 	// Verify that they are same length
 	stat1, err1 := os.Stat("sample.txt")
 	stat2, err2 := os.Stat("sample.txt.copied.txt")
-
 	if err1 != nil {
 		panic(err1)
 	}
@@ -51,6 +50,58 @@ func TestPtOpen(t *testing.T) {
 		panic(err2)
 	}
 	if stat1.Size() != stat2.Size() {
-		panic("lengths do not match!")
+		panic(
+			fmt.Sprintf(
+				"lengths do not match %d vs %d", 
+				stat1.Size(), 
+				stat2.Size(),
+			),
+		)
 	}
 }
+
+func xTestPtAppend(t *testing.T) {
+	pt := piecetable.New()
+	defer pt.Close()
+
+	var err error
+	// Load it up
+	err = pt.Load("sample.txt")
+	if err != nil {
+		panic(err)
+	}
+	sz := pt.Size()
+	t.Logf("seek to the end at size: %d", sz)
+	_, err = pt.Seek(sz, io.SeekStart)
+	if err != nil {
+		panic(err)
+	}
+	_, err = pt.Write([]byte("123456"))
+	if err != nil {
+		panic(err)
+	}
+	// Write the whole thing out
+	_, err = pt.Store("sample.txt.appended.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	stat1, err1 := os.Stat("sample.txt")
+	stat2, err2 := os.Stat("sample.txt.appended.txt")
+	if err1 != nil {
+		panic(err1)
+	}
+	if err2 != nil {
+		panic(err2)
+	}
+	if stat1.Size()+6 != stat2.Size() {
+		panic(
+			fmt.Sprintf(
+				"lengths do not match: %d vs %d",
+				stat1.Size(),
+				stat2.Size(),
+			),
+		)
+	}
+}
+
