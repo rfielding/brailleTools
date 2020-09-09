@@ -1,8 +1,6 @@
 package goatrope
 
-import (
-)
-
+import ()
 
 // Piece describes how to include data in the stream
 type Piece struct {
@@ -46,7 +44,6 @@ func (pt *PieceTable) Size() int64 {
 	return totalsz
 }
 
-
 // Cut from the data, inverse of Insert
 // Prerequisites: set Index to lowest byte to cut
 //
@@ -61,8 +58,8 @@ func (pt *PieceTable) Size() int64 {
 // cutlo and cuthi denote the boundaries that we want cut out
 // these two pairs of indices are in absolute index units
 //
-// sz and cutsz are lengths 
-// 
+// sz and cutsz are lengths
+//
 // MODIFICATIONS TO Start must be RELATIVE
 //
 func (pt *PieceTable) Cut(cutsize int64) {
@@ -70,7 +67,7 @@ func (pt *PieceTable) Cut(cutsize int64) {
 	for i := 0; i < len(pt.Pieces); i++ {
 		hi := lo + pt.Pieces[i].Size
 		cutlo := pt.Index
-		cuthi := pt.Index+cutsize
+		cuthi := pt.Index + cutsize
 		sz := hi - lo
 		if lo == cutlo && cuthi == hi {
 			// snap both
@@ -102,7 +99,7 @@ func (pt *PieceTable) Cut(cutsize int64) {
 			// no snap - inside
 			topPiece := Piece{
 				Original: pt.Pieces[i].Original,
-				Start:    pt.Pieces[i].Start + (cuthi-lo),
+				Start:    pt.Pieces[i].Start + (cuthi - lo),
 				Size:     (hi - cuthi),
 			}
 			// split piece sizes sum to:
@@ -148,30 +145,34 @@ func (pt *PieceTable) Cut(cutsize int64) {
 //  [-----------totalsz---------]
 //
 func (pt *PieceTable) Insert(cutsize int64) {
-	totalsz := pt.Size()
 	// This is the append-to-end case
-	if totalsz == pt.Index {
-		pt.Pieces = append(
-			pt.Pieces,
-			Piece{
-				Original: false,
-				Start:    pt.ModsSize,
-				Size:     cutsize,
-			},
-		)
+	// Insert for all other cases
+	newPiece := Piece{
+		Original: false,
+		Start:    pt.ModsSize,
+		Size:     cutsize,
+	}
+	if len(pt.Pieces) == 0 {
+		pt.Pieces = []Piece{newPiece}
 	} else {
-		// Insert for all other cases
 		lo := int64(0)
-		newPiece := Piece{
-			Original: false,
-			Start:    pt.ModsSize,
-			Size:     cutsize,
-		}
 		for i := 0; i < len(pt.Pieces); i++ {
 			hi := lo + pt.Pieces[i].Size
+			sz := hi - lo
 			cutlo := pt.Index
-			// If we are on a piece boundary (lo or hi), then no split required
-			if lo == cutlo {
+			if pt.Pieces[i].Original == false &&
+				pt.Pieces[i].Start+sz == pt.ModsSize &&
+				hi == cutlo  {
+				// just increase size in existing piece
+				pt.Pieces[i].Size += cutsize
+				break
+			} else if hi == cutlo {
+				pt.Pieces = append(
+					pt.Pieces,
+					newPiece,
+				)
+				break
+			} else if lo == cutlo {
 				// insert-before position i
 				pt.Pieces = append(
 					pt.Pieces[0:i],
@@ -208,4 +209,3 @@ func (pt *PieceTable) Insert(cutsize int64) {
 	// May be modified by caller
 	pt.Index += cutsize
 }
-

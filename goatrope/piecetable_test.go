@@ -80,21 +80,19 @@ func TestPieceTableInserts(t *testing.T) {
 	pt.Insert(26)
 
 	checkPieces(t, 4, pt, []goatrope.Piece{
-		{false, 50, 25},
-		{false, 75, 26},
+		{false, 50, 51},
 		{true, 0, 100},
 		{false, 0, 50},
 	})
 
 	// Split part 1 (length 26) in half
-	pt.Index = 25 + 13
+	pt.Index = 30
 	pt.Insert(10)
 
 	checkPieces(t, 5, pt, []goatrope.Piece{
-		{false, 50, 25},
-		{false, 75, 13},
+		{false, 50, 30},
 		{false, 101, 10},
-		{false, 88, 13},
+		{false, 80, 21},
 		{true, 0, 100},
 		{false, 0, 50},
 	})
@@ -104,72 +102,20 @@ func TestPieceTableInserts(t *testing.T) {
 func TestPieceTableDeletes(t *testing.T) {
 	pt := goatrope.PieceTable{}
 	pt.Load(100)
+	pt.Index = 30
 	pt.Insert(30)
+	pt.Index = 102
 	pt.Insert(20)
+	pt.Index = 50
 	pt.Insert(12)
+	pt.Index = 120
 	pt.Insert(32)
+	pt.Index = pt.Size()
 	pt.Insert(50)
 
-	// Initial state
-	checkPieces(t, 1, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 30, 20},
-		{false, 50, 12},
-		{false, 62, 32},
-		{false, 94, 50},
-	})
+	t.Logf("pt: %s", goatrope.ToJson(pt))
 
-	// lo == cutlo < cuthi == hi
 	pt.Index = 130
-	pt.Cut(20)
-	checkPieces(t, 2, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 50, 12},
-		{false, 62, 32},
-		{false, 94, 50},
-	})
+	pt.Cut(40)
 
-	// lo == cutlo < cuthi < hi
-	pt.Index = 130
-	pt.Cut(1)
-	checkPieces(t, 3, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 51, 11},
-		{false, 62, 32},
-		{false, 94, 50},
-	})
-
-	// lo < cutlo < cuthi == hi
-	pt.Index = 140
-	pt.Cut(1)
-	checkPieces(t, 3, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 51, 10},
-		{false, 62, 32},
-		{false, 94, 50},
-	})
-
-	// cutlo < lo < cuthi = hi
-	// snap on lo cut span
-	pt.Index = 130
-	pt.Cut(42)
-	checkPieces(t, 3, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 94, 50},
-	})
-
-
-	// cutlo < lo < cuthi = hi
-	// adjacent spans
-	pt.Index = 80
-	pt.Cut(60)
-	checkPieces(t, 3, pt, []goatrope.Piece{
-		{true, 0, 80},
-		{false, 104, 40},
-	})
 }
