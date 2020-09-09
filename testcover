@@ -1,0 +1,7 @@
+#!/bin/bash
+
+go mod vendor
+go mod tidy
+go build ./...
+go test -cover -coverprofile=./coverprofile.out  ./... && go tool cover -html=./coverprofile.out
+
