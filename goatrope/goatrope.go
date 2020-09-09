@@ -1,9 +1,15 @@
 package goatrope
 
 import (
+	"encoding/json"
 	"io"
 	"os"
 )
+
+func ToJson(v interface{}) string {
+	s, _ := json.MarshalIndent(v, "", "  ")
+	return string(s)
+}
 
 /*
  A GoatRope is my variant of a PieceTable for bytes
@@ -85,9 +91,6 @@ func (pt *PieceTable) Size() int64 {
 // Cut from the data, inverse of Insert
 // Prerequisites: set Index to lowest byte to cut
 func (pt *PieceTable) Cut(psize int64) {
-	if len(pt.Pieces) == 0 {
-		return
-	}
 	lo := int64(0)
 	for i := 0; i < len(pt.Pieces); i++ {
 		hi := lo + pt.Pieces[i].Size
@@ -109,18 +112,43 @@ func (pt *PieceTable) Cut(psize int64) {
 					pt.Pieces[i+1:]...,
 				)
 			}
-			break
 		} else if lo == pt.Index && pt.Index+psize < hi {
 			// matches lower boundary, but less than upper
 			pt.Pieces[i].Size -= psize
 			pt.Pieces[i].Start += (pt.Pieces[i].Size - psize)
-			break
 		} else if lo < pt.Index && pt.Index+psize == hi {
 			// matches upper boundary
 			pt.Pieces[i].Size -= psize
-			break
+		} else if lo < pt.Index && pt.Index+psize < hi {
+			n := pt.Index - lo
+			topPiece := Piece{
+				Original: pt.Pieces[i].Original,
+				Start:    pt.Pieces[i].Start + (n + psize),
+				Size:     pt.Pieces[i].Size - (n + psize),
+			}
+			pt.Pieces[i].Size = n
+			pt.Pieces = append(
+				pt.Pieces[0:i+1],
+				append(
+					[]Piece{topPiece},
+					pt.Pieces[i+1:]...,
+				)...,
+			)
+		} else if pt.Index < lo && pt.Index+psize <= hi {
+			cutsize := lo - pt.Index
+			remainder := psize - cutsize
+
+			saved := pt.Index
+			pt.Index = lo
+			pt.Cut(cutsize)
+			pt.Index = saved
+
+			pt.Cut(remainder)
+		} else {
+			lo = lo + pt.Pieces[i].Size
+			continue
 		}
-		lo = lo + pt.Pieces[i].Size
+		return
 	}
 }
 

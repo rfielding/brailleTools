@@ -8,7 +8,7 @@ import (
 // checkPieces tests the integrity of the PieceTable vs what we expected
 func checkPieces(t *testing.T, item int, pt goatrope.PieceTable, szstarts []goatrope.Piece) {
 	if len(pt.Pieces) != len(szstarts) {
-		t.Logf("%d: expect %d pieces got %d", item, len(szstarts), len(pt.Pieces))
+		t.Logf("%d: expect %d pieces got %d: %s", item, len(szstarts), len(pt.Pieces), goatrope.ToJson(pt))
 		t.Fail()
 	}
 	for i := 0; i < len(szstarts); i++ {
@@ -109,9 +109,9 @@ func TestPieceTableDeletes(t *testing.T) {
 	pt.Insert(12)
 	pt.Insert(32)
 
+	// exact lo=idx and idx+len==hi match
 	pt.Index = 130
 	pt.Cut(20)
-
 	checkPieces(t, 1, pt, []goatrope.Piece{
 		{true, 0, 100},
 		{false, 0, 30},
@@ -119,31 +119,52 @@ func TestPieceTableDeletes(t *testing.T) {
 		{false, 62, 32},
 	})
 
+	// lo=idx and idx+len < hi  -- on middle item
 	pt.Index = 130
 	pt.Cut(12)
-
 	checkPieces(t, 2, pt, []goatrope.Piece{
 		{true, 0, 100},
 		{false, 0, 30},
 		{false, 62, 32},
 	})
 
+	// lo < idx and idx+len == hi
 	pt.Index = 100
 	pt.Cut(10)
-
 	checkPieces(t, 3, pt, []goatrope.Piece{
 		{true, 0, 100},
 		{false, 10, 20},
 		{false, 62, 32},
 	})
 
+	// lo=idx and idx+len < hi -- on last item
 	pt.Index = 111
 	pt.Cut(9)
-
 	checkPieces(t, 4, pt, []goatrope.Piece{
 		{true, 0, 100},
 		{false, 10, 11},
 		{false, 62, 32},
+	})
+
+	// lo=idx and idx+len < hi -- middle item
+	pt.Index = 105
+	pt.Cut(2)
+	checkPieces(t, 4, pt, []goatrope.Piece{
+		{true, 0, 100},
+		{false, 10, 5},
+		{false, 17, 4},
+		{false, 62, 32},
+	})
+
+	// XXXX not yet passing!!!
+
+	// span many segments ... worst case
+	pt.Index = 102
+	pt.Cut(10)
+	checkPieces(t, 4, pt, []goatrope.Piece{
+		{true, 0, 100},
+		{false, 10, 2},
+		{false, 65, 29},
 	})
 
 }
