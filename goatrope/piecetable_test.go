@@ -181,4 +181,32 @@ func TestPieceTableDeletes(t *testing.T) {
             { true, 72, 28 },
             { false, 94, 50 },
 	})
+
+	pt.Index = 109
+	pt.Cut(50)
+	checkPieces(t, 7, pt, []goatrope.Piece{
+            { true, 0, 20 },
+            { true, 30, 10 },
+            { true, 41, 31 },
+            { false, 30, 20 },
+            { true, 72, 28 },
+	})
+
+	pt.Index = 20
+	pt.Cut(89)
+	checkPieces(t, 8, pt, []goatrope.Piece{
+            { true, 0, 20 },
+	})
+
+	pt.Index = 0
+	pt.Cut(20)
+	checkPieces(t, 9, pt, []goatrope.Piece{
+	})
+
+	pt.Insert(5)
+	checkPieces(t,10, pt, []goatrope.Piece{
+		{ false,144, 5},
+	})
+
+
 }
