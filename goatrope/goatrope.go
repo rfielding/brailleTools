@@ -67,35 +67,55 @@ type PieceTable struct {
 
 // Load original file to represent it in PieceTable
 // Prequisite: a default PieceTable value
-func (pt *PieceTable) Load(size int64) {
+func (pt *PieceTable) Load(cutsize int64) {
 	pt.Pieces = append(
 		pt.Pieces,
 		Piece{
 			Original: true,
 			Start:    0,
-			Size:     size,
+			Size:     cutsize,
 		},
 	)
-	pt.Index += size
+	pt.Index += cutsize
 }
 
 // Size is the total size of pieces
 func (pt *PieceTable) Size() int64 {
-	total := int64(0)
+	totalsz := int64(0)
 	for i := 0; i < len(pt.Pieces); i++ {
-		total += pt.Pieces[i].Size
+		totalsz += pt.Pieces[i].Size
 	}
-	return total
+	return totalsz
 }
+
 
 // Cut from the data, inverse of Insert
 // Prerequisites: set Index to lowest byte to cut
-func (pt *PieceTable) Cut(psize int64) {
+//
+// index names:
+//
+//       lo  cutlo  cuthi  hi
+//       [--------sz--------]
+//           [---cutsz--]
+//  [-----------totalsz---------]
+//
+// lo and hi denote the boundaries for the current piece
+// cutlo and cuthi denote the boundaries that we want cut out
+// these two pairs of indices are in absolute index units
+//
+// sz and cutsz are lengths 
+// 
+// MODIFICATIONS TO Start must be RELATIVE
+//
+func (pt *PieceTable) Cut(cutsize int64) {
 	lo := int64(0)
 	for i := 0; i < len(pt.Pieces); i++ {
 		hi := lo + pt.Pieces[i].Size
-		if lo == pt.Index && pt.Index+psize == hi {
-			// it's an exact range match
+		cutlo := pt.Index
+		cuthi := pt.Index+cutsize
+		sz := hi - lo
+		if lo == cutlo && cuthi == hi {
+			// snap both
 			if len(pt.Pieces) == 1 {
 				// just one piece... get rid of it
 				pt.Pieces = nil
@@ -107,26 +127,32 @@ func (pt *PieceTable) Cut(psize int64) {
 				pt.Pieces = pt.Pieces[1:]
 			} else {
 				// More than two pieces, not first or last
+				// insert-before idiom
 				pt.Pieces = append(
 					pt.Pieces[0:i],
 					pt.Pieces[i+1:]...,
 				)
 			}
-		} else if lo == pt.Index && pt.Index+psize < hi {
-			// matches lower boundary, but less than upper
-			pt.Pieces[i].Size -= psize
-			pt.Pieces[i].Start += (pt.Pieces[i].Size - psize)
-		} else if lo < pt.Index && pt.Index+psize == hi {
-			// matches upper boundary
-			pt.Pieces[i].Size -= psize
-		} else if lo < pt.Index && pt.Index+psize < hi {
-			n := pt.Index - lo
+		} else if lo == cutlo && cuthi < hi {
+			// snap lo
+			pt.Pieces[i].Size = (sz - cutsize)
+			pt.Pieces[i].Start += cutsize
+		} else if lo < cutlo && cuthi == hi {
+			// snap hi
+			pt.Pieces[i].Size = (sz - cutsize)
+		} else if lo < cutlo && cuthi < hi {
+			// no snap - inside
 			topPiece := Piece{
 				Original: pt.Pieces[i].Original,
-				Start:    pt.Pieces[i].Start + (n + psize),
-				Size:     pt.Pieces[i].Size - (n + psize),
+				Start:    pt.Pieces[i].Start + (cuthi-lo),
+				Size:     (hi - cuthi),
 			}
-			pt.Pieces[i].Size = n
+			// split piece sizes sum to:
+			//   (hi - cuthi) + (cutlo - lo)
+			// = (hi - lo) - (cuthi - cutlo)
+			// = (sz - cutsize)
+			pt.Pieces[i].Size = (cutlo - lo)
+			// append-after idiom
 			pt.Pieces = append(
 				pt.Pieces[0:i+1],
 				append(
@@ -134,17 +160,19 @@ func (pt *PieceTable) Cut(psize int64) {
 					pt.Pieces[i+1:]...,
 				)...,
 			)
-		} else if pt.Index < lo && pt.Index+psize <= hi {
-			cutsize := lo - pt.Index
-			remainder := psize - cutsize
-
-			saved := pt.Index
+		} else if (cutlo < lo) && (lo <= cuthi && cuthi <= hi) {
+			// cuthi in range
+			// cut THIS chunk
 			pt.Index = lo
-			pt.Cut(cutsize)
-			pt.Index = saved
-
-			pt.Cut(remainder)
+			pt.Cut(cuthi - lo)
+			// cut REMAINING chunks that preceded this one
+			pt.Index = cutlo
+			pt.Cut(lo - cutlo)
+			// cuts out (cutlo - cuthi) bytes when finished
+			// when working back to cut out chunks,
+			// will snap to the new hi
 		} else {
+			// Not yet in range... we ONLY continue in this case
 			lo = lo + pt.Pieces[i].Size
 			continue
 		}
@@ -156,16 +184,21 @@ func (pt *PieceTable) Cut(psize int64) {
 // Prerequisite: Load
 // Prerequisite: set Index to insert-before location,
 // where index is set past the last byte to append
-func (pt *PieceTable) Insert(psize int64) {
-	sz := pt.Size()
+//       lo  cutlo  cuthi  hi
+//       [--------sz--------]
+//           [---cutsz--]
+//  [-----------totalsz---------]
+//
+func (pt *PieceTable) Insert(cutsize int64) {
+	totalsz := pt.Size()
 	// This is the append-to-end case
-	if sz == pt.Index {
+	if totalsz == pt.Index {
 		pt.Pieces = append(
 			pt.Pieces,
 			Piece{
 				Original: false,
 				Start:    pt.ModsSize,
-				Size:     psize,
+				Size:     cutsize,
 			},
 		)
 	} else {
@@ -174,12 +207,13 @@ func (pt *PieceTable) Insert(psize int64) {
 		newPiece := Piece{
 			Original: false,
 			Start:    pt.ModsSize,
-			Size:     psize,
+			Size:     cutsize,
 		}
 		for i := 0; i < len(pt.Pieces); i++ {
 			hi := lo + pt.Pieces[i].Size
+			cutlo := pt.Index
 			// If we are on a piece boundary (lo or hi), then no split required
-			if lo == pt.Index {
+			if lo == cutlo {
 				// insert-before position i
 				pt.Pieces = append(
 					pt.Pieces[0:i],
@@ -189,17 +223,16 @@ func (pt *PieceTable) Insert(psize int64) {
 					)...,
 				)
 				break
-			} else if lo < pt.Index && pt.Index < hi {
-				n := pt.Index - lo
+			} else if lo < cutlo && cutlo < hi {
 				// SplitPiece invariants:
 				// sizes total original size
 				// top start ahead of original start by n
 				topPiece := Piece{
 					Original: pt.Pieces[i].Original,
-					Start:    pt.Pieces[i].Start + n,
-					Size:     pt.Pieces[i].Size - n,
+					Start:    pt.Pieces[i].Start + (cutlo - lo),
+					Size:     pt.Pieces[i].Size - (cutlo - lo),
 				}
-				pt.Pieces[i].Size = n
+				pt.Pieces[i].Size = (cutlo - lo)
 				pt.Pieces = append(
 					pt.Pieces[0:i+1],
 					append(
@@ -213,9 +246,9 @@ func (pt *PieceTable) Insert(psize int64) {
 		}
 	}
 	// Only tracked internally and set here
-	pt.ModsSize += psize
+	pt.ModsSize += cutsize
 	// May be modified by caller
-	pt.Index += psize
+	pt.Index += cutsize
 }
 
 // MemoryFile always expects

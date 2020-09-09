@@ -108,63 +108,68 @@ func TestPieceTableDeletes(t *testing.T) {
 	pt.Insert(20)
 	pt.Insert(12)
 	pt.Insert(32)
+	pt.Insert(50)
 
-	// exact lo=idx and idx+len==hi match
+	// Initial state
+	checkPieces(t, 1, pt, []goatrope.Piece{
+		{true, 0, 100},
+		{false, 0, 30},
+		{false, 30, 20},
+		{false, 50, 12},
+		{false, 62, 32},
+		{false, 94, 50},
+	})
+
+	// lo == cutlo < cuthi == hi
 	pt.Index = 130
 	pt.Cut(20)
-	checkPieces(t, 1, pt, []goatrope.Piece{
+	checkPieces(t, 2, pt, []goatrope.Piece{
 		{true, 0, 100},
 		{false, 0, 30},
 		{false, 50, 12},
 		{false, 62, 32},
+		{false, 94, 50},
 	})
 
-	// lo=idx and idx+len < hi  -- on middle item
+	// lo == cutlo < cuthi < hi
 	pt.Index = 130
-	pt.Cut(12)
-	checkPieces(t, 2, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 0, 30},
-		{false, 62, 32},
-	})
-
-	// lo < idx and idx+len == hi
-	pt.Index = 100
-	pt.Cut(10)
+	pt.Cut(1)
 	checkPieces(t, 3, pt, []goatrope.Piece{
 		{true, 0, 100},
-		{false, 10, 20},
+		{false, 0, 30},
+		{false, 51, 11},
 		{false, 62, 32},
+		{false, 94, 50},
 	})
 
-	// lo=idx and idx+len < hi -- on last item
-	pt.Index = 111
-	pt.Cut(9)
-	checkPieces(t, 4, pt, []goatrope.Piece{
+	// lo < cutlo < cuthi == hi
+	pt.Index = 140
+	pt.Cut(1)
+	checkPieces(t, 3, pt, []goatrope.Piece{
 		{true, 0, 100},
-		{false, 10, 11},
+		{false, 0, 30},
+		{false, 51, 10},
 		{false, 62, 32},
+		{false, 94, 50},
 	})
 
-	// lo=idx and idx+len < hi -- middle item
-	pt.Index = 105
-	pt.Cut(2)
-	checkPieces(t, 4, pt, []goatrope.Piece{
+	// cutlo < lo < cuthi = hi
+	// snap on lo cut span
+	pt.Index = 130
+	pt.Cut(42)
+	checkPieces(t, 3, pt, []goatrope.Piece{
 		{true, 0, 100},
-		{false, 10, 5},
-		{false, 17, 4},
-		{false, 62, 32},
+		{false, 0, 30},
+		{false, 94, 50},
 	})
 
-	// XXXX not yet passing!!!
 
-	// span many segments ... worst case
-	pt.Index = 102
-	pt.Cut(10)
-	checkPieces(t, 4, pt, []goatrope.Piece{
-		{true, 0, 100},
-		{false, 10, 2},
-		{false, 65, 29},
+	// cutlo < lo < cuthi = hi
+	// adjacent spans
+	pt.Index = 80
+	pt.Cut(60)
+	checkPieces(t, 3, pt, []goatrope.Piece{
+		{true, 0, 80},
+		{false, 104, 40},
 	})
-
 }
