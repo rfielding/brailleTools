@@ -1,6 +1,8 @@
 GoatRope
 =========
 
+(goat.jpg)[goat.jpg]
+
 In building text editors, and stream editors; one of the most fundamental tasks
 is to build an object that handles easy inserts and deletes into a stream.
 One approach is to make this object looks like a file; specifically, to look
