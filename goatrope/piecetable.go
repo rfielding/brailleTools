@@ -16,8 +16,6 @@ type Piece struct {
 type PieceTable struct {
 	Pieces   []Piece
 	Index    int64
-	Original File
-	Mods     File
 	ModsSize int64
 }
 
