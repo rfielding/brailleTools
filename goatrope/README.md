@@ -50,7 +50,7 @@ The main characteristics are:
 - The original file being edited can stay on disk, and is immutable
 - A second file that can be on disk or in memory, and is append-only
 - A table that points to either the original or mods file, offsets where data is, and how many bytes to use at that offset
-- This lets us easily have `Load` to get the initual file, `Insert`, and its inverse `Cut` which both just take a number of bytes
+- This lets us easily have `Load` to get the initial file, `Insert`, and its inverse `Cut` which both just take a number of bytes
 - There is no reason for the table itself to get entangled in file IO, as it is just tracking indices
 - The GoatRope wraps around the table with a `File` interface, and the `Original` and `Mods` files only need a file interface
 - In this implementation, the Original is on disk, and the Mods is in memory, but they have the exact same interface
@@ -70,10 +70,8 @@ The main characteristics are:
 The table rows: `(IsOriginal, Start, Offset)` specify for each piece, which of the two files, where the offset is, and how many bytes.
 The algorithm for doing Insert and Cut are rather complicated, but they are completely isolated and tested independent of any file objects.
 
-
-If you need to be able to insert and delete into large files efficiently, or edit file streams;
-you may find this package useful.  You can use the PieceTable on its own, as it is completely separate
-from file IO, and tested on its own.  You make GoatRopes backed by files or memory.
+Driving Force
+==============
 
 A Braille editor is an extreme example of a line-oriented editor.  It makes sense to have the GoatRope
 be a file enhanced with navigation, search, and index functions; where the editor that wraps around it
