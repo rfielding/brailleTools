@@ -162,7 +162,7 @@ func (pt *PieceTable) Insert(cutsize int64) {
 			cutlo := pt.Index
 			if pt.Pieces[i].Original == false &&
 				pt.Pieces[i].Start+sz == pt.ModsSize &&
-				hi == cutlo  {
+				hi == cutlo {
 				// just increase size in existing piece
 				pt.Pieces[i].Size += cutsize
 				break

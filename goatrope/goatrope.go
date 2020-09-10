@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"time"
 )
 
 func ToJson(v interface{}) string {
@@ -42,12 +43,96 @@ type File interface {
 var _ File = &os.File{}
 
 // GoatRope extends File with extra behaviors
-type GoatRope interface {
-	File
+type GoatRope struct {
+	PieceTable *PieceTable
+	FileInfo *GoatRopeFileInfo
+}
+var _ File = &GoatRope{}
+
+
+type GoatRopeFileInfo struct {
+	PieceTable *PieceTable
+        name    string
+        size    int64
+        mode    os.FileMode
+        modtime time.Time
+        isdir   bool
+        sys     interface{}
 }
 
-// MemoryFile always expects
-// to be seeked to the end before
-// Write
-type MemoryFile struct {
+func (fi *GoatRopeFileInfo) Name() string {
+        return fi.name
+}
+
+func (fi *GoatRopeFileInfo) Size() int64 {
+        return fi.PieceTable.Size()
+}
+
+func (fi *GoatRopeFileInfo) Mode() os.FileMode {
+        return fi.mode
+}
+
+func (fi *GoatRopeFileInfo) ModTime() time.Time {
+        return fi.modtime
+}
+
+func (fi *GoatRopeFileInfo) IsDir() bool {
+        return fi.isdir
+}
+
+func (fi *GoatRopeFileInfo) Sys() interface{} {
+        return fi.sys
+}
+
+// Allocate a new and unloaded GoatRope
+func NewGoatRope() *GoatRope {
+	g := &GoatRope{}
+	g.PieceTable = &PieceTable{}
+	g.FileInfo = &GoatRopeFileInfo{PieceTable: g.PieceTable}
+	g.PieceTable.Mods = &MemoryFile{}
+	return g
+}
+
+// Load Original from the filesystem
+func (g *GoatRope) LoadByName(name string) error {
+	f, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+	g.PieceTable.Original = f
+	s, err := os.Stat(name)
+	if err != nil {
+		return err
+	}
+	g.PieceTable.Mods = &MemoryFile{}
+	g.PieceTable.Load(s.Size())
+	return nil
+}
+
+func (g *GoatRope) Seek(to int64, whence int) (int64, error) {
+	g.PieceTable.Index = to
+	return to, nil
+}
+
+// Seek to where you want to write first!
+func (g *GoatRope) Write(b []byte) (int, error) {
+	g.PieceTable.Mods.Write(b)
+	g.PieceTable.Insert(int64(len(b)))
+	return len(b), nil
+}
+
+func (g *GoatRope) Close() error {
+	return g.PieceTable.Original.Close()
+}
+
+func (g *GoatRope) Read(data []byte) (int, error) {
+	panic("error")
+}
+
+func (g *GoatRope) Stat() (os.FileInfo, error) {
+	return g.FileInfo,nil
+}
+
+func (g *GoatRope) Cut(n int64) {
+	g.PieceTable.Cut(n)
 }
