@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"time"
+	//	"fmt"
 )
 
 func ToJson(v interface{}) string {
@@ -37,6 +38,12 @@ type File interface {
 	io.Closer
 	io.Writer
 	Stat() (os.FileInfo, error)
+}
+
+// Up and down are recognized by carriage returns
+// These are convenience methods for seek
+type Navigator interface {
+	Lines(start int64, count int64) (int64, int64, error)
 }
 
 // Ensure that indeed a *os.File does implement File
@@ -95,6 +102,47 @@ func NewGoatRope() *GoatRope {
 	return g
 }
 
+func Render(g File, start int64, stop int64) []byte {
+	buffer := make([]byte, stop-start)
+	g.Seek(start, io.SeekStart)
+	_, _ = io.ReadFull(g, buffer)
+	return buffer
+}
+
+func Lines(g File, buffer []byte, start int64, count int64) (int64, int64, error) {
+	idx, err := g.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, 0, err
+	}
+	lo := idx
+	hi := lo
+	read := int64(0)
+	line := int64(0)
+	for {
+		rd, err := g.Read(buffer)
+		if rd == 0 || err == io.EOF {
+			return 0, 0, io.EOF
+		}
+		if err != nil {
+			return 0, 0, err
+		}
+		for i := 0; i < rd; i++ {
+			if buffer[i] == '\n' {
+				line++
+				if line == start {
+					lo = idx + read + int64(i) + 1
+				}
+				if line == start+count {
+					hi = idx + read + int64(i) + 1
+					g.Seek(hi, io.SeekStart)
+					return lo, hi, nil
+				}
+			}
+		}
+		read += int64(rd)
+	}
+}
+
 func (g *GoatRope) LoadByName(name string) error {
 	f, err := os.Open(name)
 	if err != nil {
@@ -111,7 +159,13 @@ func (g *GoatRope) LoadByName(name string) error {
 }
 
 func (g *GoatRope) Seek(to int64, whence int) (int64, error) {
-	g.PieceTable.Index = to
+	if whence == io.SeekStart {
+		g.PieceTable.Index = to
+	} else if whence == io.SeekCurrent {
+		g.PieceTable.Index += to
+	} else if whence == io.SeekEnd {
+		g.PieceTable.Index = g.PieceTable.Size() - 1 - to
+	}
 	return to, nil
 }
 
@@ -146,49 +200,55 @@ func (g *GoatRope) theFile(isOriginal bool) File {
 	return g.Mods
 }
 
+func minint64(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func (g *GoatRope) Read(data []byte) (int, error) {
-	read := 0
-	// try to completely fill the data array
+	read := 0 // 0 .. len(data)
 	lo := int64(0)
-	// cutlo can move up as we read data
+	cutlo := g.PieceTable.Index
+	cuthi := cutlo + int64(len(data))
 	for i := 0; i < len(g.PieceTable.Pieces); i++ {
-		cutlo := g.PieceTable.Index
-		cuthi := cutlo + int64(len(data))
 		hi := lo + g.PieceTable.Pieces[i].Size
-		sz := hi - lo
 		if hi <= cutlo {
-			// wait for matching part
+			//next
 		} else if cuthi <= lo {
 			break
 		} else {
-			// There is some kind of reading work
-			// to do
-			f := g.theFile(
-				g.PieceTable.Pieces[i].Original,
-			)
-			f.Seek(
-				g.PieceTable.Pieces[i].Start+
-					(cutlo-lo),
-				io.SeekStart,
-			)
-			max := (hi - cutlo)
-			if cuthi < hi {
-				max = (cuthi - cutlo)
-			}
-			if max == 0 {
-				return read, io.EOF
-			}
-			rd, err := io.ReadFull(
-				f,
-				data[read:read+int(max)],
-			)
-			read += rd
-			g.PieceTable.Index += int64(rd)
-			if err != nil {
-				return read, err
+			// Select the file
+			isOriginal := g.PieceTable.Pieces[i].Original
+			f := g.theFile(isOriginal)
+			for {
+				n := cutlo - lo
+				allowed := len(data) - read
+				available := g.PieceTable.Pieces[i].Size - n
+				max := minint64(int64(allowed), available)
+				if max == 0 {
+					break
+				}
+				seekTo := g.PieceTable.Pieces[i].Start + n
+				// Seek to create the buffer
+				f.Seek(
+					seekTo,
+					io.SeekStart,
+				)
+				rd, err := io.ReadFull(
+					f,
+					data[read:read+int(max)],
+				)
+				cutlo += int64(rd)
+				read += rd
+				g.PieceTable.Index += int64(rd)
+				if err != nil && err != io.EOF {
+					return read, err
+				}
 			}
 		}
-		lo += sz
+		lo += g.PieceTable.Pieces[i].Size
 	}
 	if read == 0 {
 		return 0, io.EOF
