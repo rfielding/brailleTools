@@ -9,7 +9,7 @@ import (
 )
 
 func ToJson(v interface{}) string {
-	s, _ := json.MarshalIndent(v, "", "  ")
+	s, _ := json.Marshal(v)
 	return string(s)
 }
 
