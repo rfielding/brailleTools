@@ -106,11 +106,11 @@ func NewGoatRope() *GoatRope {
 }
 
 type RuneScanner struct {
-	owner *GoatRope
-	rdr   *bufio.Reader
-	runeLast rune
+	owner      *GoatRope
+	rdr        *bufio.Reader
+	runeLast   rune
 	runeSzLast int
-	unRead bool
+	unRead     bool
 }
 
 var _ io.RuneScanner = NewGoatRope().RuneScanner()
@@ -118,10 +118,9 @@ var _ io.RuneScanner = NewGoatRope().RuneScanner()
 func (g *GoatRope) RuneScanner() *RuneScanner {
 	return &RuneScanner{
 		owner: g,
-		rdr: bufio.NewReader(g),
+		rdr:   bufio.NewReader(g),
 	}
 }
-
 
 func (r *RuneScanner) ReadLine() ([]byte, bool, error) {
 	return r.rdr.ReadLine()
@@ -153,45 +152,26 @@ func (r *RuneScanner) ReadRune() (rune, int, error) {
 	return -1, 0, io.EOF
 }
 
-func Render(g File, start int64, stop int64) []byte {
-	buffer := make([]byte, stop-start)
-	g.Seek(start, io.SeekStart)
-	_, _ = io.ReadFull(g, buffer)
-	return buffer
-}
-
-func Lines(g File, buffer []byte, start int64, count int64) (int64, int64, error) {
-	idx, err := g.Seek(0, io.SeekCurrent)
-	if err != nil {
-		return 0, 0, err
-	}
-	lo := idx
-	hi := lo
-	read := int64(0)
+func (g *GoatRope) SeekToLine(lineToFind int64) (*RuneScanner, int64) {
 	line := int64(0)
-	for {
-		rd, err := g.Read(buffer)
-		if rd == 0 || err == io.EOF {
-			return 0, 0, io.EOF
-		}
-		if err != nil {
-			return 0, 0, err
-		}
-		for i := 0; i < rd; i++ {
-			if buffer[i] == '\n' {
-				line++
-				if line == start {
-					lo = idx + read + int64(i) + 1
-				}
-				if line == start+count {
-					hi = idx + read + int64(i) + 1
-					g.Seek(hi, io.SeekStart)
-					return lo, hi, nil
-				}
-			}
-		}
-		read += int64(rd)
+	idx := int64(0)
+	rdr := g.RuneScanner()
+	if lineToFind == 0 {
+		return rdr, idx
 	}
+	for {
+		lineBytes, _, err := rdr.ReadLine()
+		// Assume that newline is always 1 char
+		idx += int64(len(lineBytes)) + 1
+		if err == io.EOF {
+			break
+		}
+		line++
+		if line+1 == lineToFind {
+			return rdr, idx
+		}
+	}
+	return nil, idx
 }
 
 func (g *GoatRope) LoadByName(name string) error {
