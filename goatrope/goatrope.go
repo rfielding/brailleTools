@@ -1,10 +1,13 @@
 package goatrope
 
 import (
+	"bufio"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"time"
+	"unicode/utf8"
 	//	"fmt"
 )
 
@@ -100,6 +103,54 @@ func NewGoatRope() *GoatRope {
 	g.FileInfo = &GoatRopeFileInfo{PieceTable: g.PieceTable}
 	g.Mods = &MemoryFile{}
 	return g
+}
+
+type RuneScanner struct {
+	owner *GoatRope
+	rdr   *bufio.Reader
+	runeLast rune
+	runeSzLast int
+	unRead bool
+}
+
+var _ io.RuneScanner = NewGoatRope().RuneScanner()
+
+func (g *GoatRope) RuneScanner() *RuneScanner {
+	return &RuneScanner{
+		owner: g,
+		rdr: bufio.NewReader(g),
+	}
+}
+
+
+func (r *RuneScanner) ReadLine() ([]byte, bool, error) {
+	return r.rdr.ReadLine()
+}
+
+func (r *RuneScanner) UnreadRune() error {
+	r.unRead = true
+	return nil
+}
+
+func (r *RuneScanner) ReadRune() (rune, int, error) {
+	if r.unRead {
+		r.unRead = false
+		return r.runeLast, r.runeSzLast, nil
+	}
+	for peekBytes := 4; peekBytes > 0; peekBytes-- {
+		b, err := r.rdr.Peek(peekBytes)
+		if err == nil {
+			rn, sz := utf8.DecodeRune(b)
+			if rn == utf8.RuneError {
+				return rn, sz, fmt.Errorf("Rune error")
+			}
+			// success
+			r.runeLast = rn
+			r.runeSzLast = sz
+			return rn, sz, nil
+		}
+	}
+	return -1, 0, io.EOF
 }
 
 func Render(g File, start int64, stop int64) []byte {

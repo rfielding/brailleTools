@@ -170,7 +170,7 @@ func (pt *PieceTable) Cut(cutsz int64) {
 				pt.Pieces[i].Size = n
 				pt.Pieces[i+1].Size = sz - n - cutsz
 				pt.Pieces[i+1].Start += n + cutsz
-			} else if lo == cutlo  {
+			} else if lo == cutlo {
 				pt.Pieces[i].Size -= cutsz
 				pt.Pieces[i].Start += cutsz
 			}
