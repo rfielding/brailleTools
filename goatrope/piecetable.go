@@ -141,8 +141,22 @@ func (pt *PieceTable) Cut(cutsz int64) {
 	for i := 0; i < len(pt.Pieces); i++ {
 		lo := hi
 		hi += pt.Pieces[i].Size
+		inRangeLo := (lo <= cuthi && cuthi < hi)
+		inRangeHi := (lo <= cuthi && cuthi == hi)
+		inRange := inRangeLo || inRangeHi
 
-		if lo <= cuthi && cuthi < hi {
+		// recurse backwards on last chunk in range
+		if inRange && cutlo < lo {
+			saved := cutlo
+			pt.Index = lo
+			pt.Cut(cuthi - lo)
+			pt.Index = cutlo
+			pt.Cut(lo - cutlo)
+			pt.Index = saved
+			return
+		}
+
+		if inRangeLo {
 			if lo < cutlo {
 				pt.Pieces = append(
 					pt.Pieces[0:i],
@@ -159,18 +173,11 @@ func (pt *PieceTable) Cut(cutsz int64) {
 			} else if lo == cutlo  {
 				pt.Pieces[i].Size -= cutsz
 				pt.Pieces[i].Start += cutsz
-			} else { // cutlo < lo
-				saved := cutlo
-				pt.Index = lo
-				pt.Cut(cuthi - lo)
-				pt.Index = cutlo
-				pt.Cut(lo - cutlo)
-				pt.Index = saved
 			}
 			return
 		}
 
-		if lo <= cuthi && cuthi == hi {
+		if inRangeHi {
 			if lo < cutlo {
 				pt.Pieces[i].Size -= cutsz
 			} else if lo == cutlo {
@@ -178,15 +185,9 @@ func (pt *PieceTable) Cut(cutsz int64) {
 					pt.Pieces[0:i],
 					pt.Pieces[i+1:]...,
 				)
-			} else { //cutlo < lo
-				saved := cutlo
-				pt.Index = lo
-				pt.Cut(cuthi - lo)
-				pt.Index = cutlo
-				pt.Cut(lo - cutlo)
-				pt.Index = saved
 			}
 			return
 		}
+
 	}
 }
