@@ -36,8 +36,9 @@ func xTestGoatRopeByLine(t *testing.T) {
 	*/
 
 	g.Seek(17, io.SeekStart)
-	g.Write([]byte("// hello\n"))
 	g.Write([]byte("// world\n"))
+	g.Seek(17, io.SeekStart)
+	g.Write([]byte("// hello\n"))
 	g.Seek(0, io.SeekStart)
 
 	line := int64(0)
