@@ -172,7 +172,6 @@ func TestPieceTableDeletes(t *testing.T) {
 		{true, 72, 28},
 		{false, 94, 50},
 	})
-	/*
 
 		pt.Index = 20
 		pt.Cut(12)
@@ -219,6 +218,4 @@ func TestPieceTableDeletes(t *testing.T) {
 		checkPieces(t, 10, pt, []goatrope.Piece{
 			{false, 144, 5},
 		})
-	*/
-
 }
