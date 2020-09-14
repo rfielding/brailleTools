@@ -1,6 +1,7 @@
 package goatrope
 
 import (
+//	"fmt"
 )
 
 // Piece describes how to include data in the stream
@@ -37,27 +38,10 @@ func (pt *PieceTable) Load(cutsz int64) {
 }
 
 
-func (pt *PieceTable) Insert(cutsz int64) {
-	// The new piece will look like this,
-	// unless we extend the previous piece
-	newPiece := Piece{false, pt.ModsSize, cutsz}
-	defer func() {
-		pt.ModsSize += cutsz
-		pt.Index += cutsz
-	}()
-
-	// Appending empty is a trivial case
-	if len(pt.Pieces) == 0 {
-		pt.Pieces = []Piece{newPiece}
-		return
-	}
-
+func (pt *PieceTable) idxFind(iStart int) (lo int64, hi int64, cutlo int64, i int) {
+	i = iStart
 	// Append amongst existing
-	hi := int64(0)
-	lo := int64(0)
-	cutlo := pt.Index
-	//cuthi := cutlo + cutsz
-	i := 0
+	cutlo = pt.Index
 
 	// find the current index
 	for {
@@ -74,8 +58,25 @@ func (pt *PieceTable) Insert(cutsz int64) {
 
 		i++
 	}
+	return lo, hi, cutlo, i
+}
 
+func (pt *PieceTable) Insert(cutsz int64) {
+	// The new piece will look like this,
+	// unless we extend the previous piece
+	newPiece := Piece{false, pt.ModsSize, cutsz}
+	defer func() {
+		pt.ModsSize += cutsz
+		pt.Index += cutsz
+	}()
 
+	// Appending empty is a trivial case
+	if len(pt.Pieces) == 0 {
+		pt.Pieces = []Piece{newPiece}
+		return
+	}
+
+	lo, hi, cutlo, i := pt.idxFind(0)
 
 	if cutlo == hi {
 		tail := pt.Pieces[i].Start + pt.Pieces[i].Size
@@ -119,5 +120,59 @@ func (pt *PieceTable) Insert(cutsz int64) {
 	pt.Pieces[i].Size = n
 }
 
-func (pt *PieceTable) Cut(cutsize int64) {
+
+func (pt *PieceTable) Cut(cutsz int64) {
+	// Handle do-nothing situations
+	if len(pt.Pieces) == 0 {
+		return
+	}
+	if cutsz == 0 {
+		return
+	}
+	fileSz := pt.Size()
+	if pt.Index+1 >= fileSz {
+		return
+	}
+	// Look for matching chunk
+	cutlo := pt.Index
+	cuthi := cutlo + cutsz
+	hi := int64(0)
+	for i := 0 ; i < len(pt.Pieces); i++ {
+		lo := hi
+		hi += pt.Pieces[i].Size
+		// last handled chunk and recurse backwards
+		if lo <= cuthi && cuthi <= hi {
+			if lo == cutlo && cuthi == hi {
+				pt.Pieces = append(
+					pt.Pieces[0:i],
+					pt.Pieces[i+1:]...,
+				)
+			} else if lo == cutlo && cuthi < hi {
+				pt.Pieces[i].Size -= cutsz
+				pt.Pieces[i].Start += cutsz
+			} else if lo < cutlo && cuthi == hi {
+				pt.Pieces[i].Size -= cutsz
+			} else if lo < cutlo && cuthi < hi {
+				pt.Pieces = append(
+					pt.Pieces[0:i],
+					append(
+						[]Piece{pt.Pieces[i]},
+						pt.Pieces[i:]...,
+					)...,
+				)
+				sz := hi - lo
+				n := cutlo - lo
+				pt.Pieces[i].Size = n
+				pt.Pieces[i+1].Size = sz - n - cutsz
+				pt.Pieces[i+1].Start += n + cutsz
+			} else {
+				saved := cutlo
+				pt.Index = lo
+				pt.Cut(lo - cutlo)
+				pt.Index = saved
+			}
+			return
+		}
+	}
 }
+

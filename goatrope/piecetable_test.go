@@ -124,7 +124,7 @@ func TestPieceTableInserts(t *testing.T) {
 }
 
 // TestPieceTableDeletes checks integrity of delete algorithm
-func xTestPieceTableDeletes(t *testing.T) {
+func TestPieceTableDeletes(t *testing.T) {
 	pt := goatrope.PieceTable{}
 	pt.Load(100)
 	pt.Index = 30
@@ -173,7 +173,7 @@ func xTestPieceTableDeletes(t *testing.T) {
 		{true, 72, 28},
 		{false, 94, 50},
 	})
-
+/*
 	pt.Index = 20
 	pt.Cut(20)
 	checkPieces(t, 4, pt, []goatrope.Piece{
@@ -231,5 +231,6 @@ func xTestPieceTableDeletes(t *testing.T) {
 	checkPieces(t, 10, pt, []goatrope.Piece{
 		{false, 144, 5},
 	})
+*/
 
 }
