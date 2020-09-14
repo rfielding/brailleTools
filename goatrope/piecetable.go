@@ -1,7 +1,7 @@
 package goatrope
 
 import (
-//	"fmt"
+	"fmt"
 )
 
 // Piece describes how to include data in the stream
@@ -9,6 +9,10 @@ type Piece struct {
 	Original bool
 	Start    int64
 	Size     int64
+}
+
+func (p *Piece) ToString() string {
+	return fmt.Sprintf("(%t, %d, %d)", p.Original, p.Start, p.Size)
 }
 
 // PieceTable structure of a GoatRope
@@ -36,7 +40,6 @@ func (pt *PieceTable) Load(cutsz int64) {
 	pt.Pieces = []Piece{{true, 0, cutsz}}
 	pt.Index = cutsz
 }
-
 
 func (pt *PieceTable) idxFind(iStart int) (lo int64, hi int64, cutlo int64, i int) {
 	i = iStart
@@ -105,21 +108,19 @@ func (pt *PieceTable) Insert(cutsz int64) {
 		return
 	}
 
-
-	// lo < cutlo.  after i, inser new and split 
+	// lo < cutlo.  after i, inser new and split
 	n := cutlo - lo
 	pt.Pieces = append(
 		pt.Pieces[0:i+1],
 		append(
 			[]Piece{newPiece, pt.Pieces[i]},
-			pt.Pieces[i+1:]...
+			pt.Pieces[i+1:]...,
 		)...,
 	)
 	pt.Pieces[i+2].Start += n
 	pt.Pieces[i+2].Size -= n
 	pt.Pieces[i].Size = n
 }
-
 
 func (pt *PieceTable) Cut(cutsz int64) {
 	// Handle do-nothing situations
@@ -130,29 +131,19 @@ func (pt *PieceTable) Cut(cutsz int64) {
 		return
 	}
 	fileSz := pt.Size()
-	if pt.Index+1 >= fileSz {
+	if pt.Index >= fileSz {
 		return
 	}
 	// Look for matching chunk
 	cutlo := pt.Index
 	cuthi := cutlo + cutsz
 	hi := int64(0)
-	for i := 0 ; i < len(pt.Pieces); i++ {
+	for i := 0; i < len(pt.Pieces); i++ {
 		lo := hi
 		hi += pt.Pieces[i].Size
-		// last handled chunk and recurse backwards
-		if lo <= cuthi && cuthi <= hi {
-			if lo == cutlo && cuthi == hi {
-				pt.Pieces = append(
-					pt.Pieces[0:i],
-					pt.Pieces[i+1:]...,
-				)
-			} else if lo == cutlo && cuthi < hi {
-				pt.Pieces[i].Size -= cutsz
-				pt.Pieces[i].Start += cutsz
-			} else if lo < cutlo && cuthi == hi {
-				pt.Pieces[i].Size -= cutsz
-			} else if lo < cutlo && cuthi < hi {
+
+		if lo <= cuthi && cuthi < hi {
+			if lo < cutlo {
 				pt.Pieces = append(
 					pt.Pieces[0:i],
 					append(
@@ -165,9 +156,33 @@ func (pt *PieceTable) Cut(cutsz int64) {
 				pt.Pieces[i].Size = n
 				pt.Pieces[i+1].Size = sz - n - cutsz
 				pt.Pieces[i+1].Start += n + cutsz
-			} else {
+			} else if lo == cutlo  {
+				pt.Pieces[i].Size -= cutsz
+				pt.Pieces[i].Start += cutsz
+			} else { // cutlo < lo
 				saved := cutlo
 				pt.Index = lo
+				pt.Cut(cuthi - lo)
+				pt.Index = cutlo
+				pt.Cut(lo - cutlo)
+				pt.Index = saved
+			}
+			return
+		}
+
+		if lo <= cuthi && cuthi == hi {
+			if lo < cutlo {
+				pt.Pieces[i].Size -= cutsz
+			} else if lo == cutlo {
+				pt.Pieces = append(
+					pt.Pieces[0:i],
+					pt.Pieces[i+1:]...,
+				)
+			} else { //cutlo < lo
+				saved := cutlo
+				pt.Index = lo
+				pt.Cut(cuthi - lo)
+				pt.Index = cutlo
 				pt.Cut(lo - cutlo)
 				pt.Index = saved
 			}
@@ -175,4 +190,3 @@ func (pt *PieceTable) Cut(cutsz int64) {
 		}
 	}
 }
-
