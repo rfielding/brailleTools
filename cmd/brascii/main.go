@@ -106,7 +106,12 @@ func main() {
 	decode := flag.Bool("decode", false, "decode braile to ascii binary")
 	isBinary := flag.Bool("binary", false, "literal binary translation, even of CR/LF")
 	keepCR := flag.Bool("keep-cr", false, "keep literal CR so that binary back translate is still unambiguous")
+	help := flag.Bool("help", false, "show help")
 	flag.Parse()
+	if *help == true {
+		flag.Usage()
+		os.Exit(0)
+	}
 	brailleInit()
 	// Setup the reverse table to convert braille to ascii
 
