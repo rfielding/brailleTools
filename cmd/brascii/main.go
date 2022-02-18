@@ -57,6 +57,7 @@ var braillePerm = []int{
 }
 
 var asciiPerm = make([]int, 256)
+var present = make([]int, 256)
 
 // Byte by byte translation to braille
 func main() {
@@ -67,6 +68,12 @@ func main() {
 	// Setup the reverse table to convert braille to ascii
 	for i := 0; i < 256; i++ {
 		asciiPerm[braillePerm[i]] = i
+		present[i]++
+	}
+	for i := 0; i < 256; i++ {
+		if present[i] != 1 {
+			panic(fmt.Sprintf("inconsistency at %d", i))
+		}
 	}
 
 	if *decode == true {
