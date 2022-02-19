@@ -207,15 +207,15 @@ func brailleTable(isGithub bool) {
 		fmt.Printf("| %X_",j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
-			gh := " <br> "
+			gh := " "
 			if isGithub {
-				gh = "<br>"
+				gh = " <br> "
 			}
 			fmt.Printf("| %s%s%3s ", string(braillePerm[c]+0x2800), gh, findName(c))
 		}
 		fmt.Printf("|\n")
 	}
-	fmt.Printf("|\n")
+	fmt.Printf("\n")
 }
 
 // Byte by byte translation to braille
@@ -234,7 +234,11 @@ func main() {
 	}
 	brailleInit()
 	if *table {
-		brailleTable(*tableGithub)
+		brailleTable(false)
+		os.Exit(0)
+	}
+	if *tableGithub {
+		brailleTable(true)
 		os.Exit(0)
 	}
 	// Setup the reverse table to convert braille to ascii
