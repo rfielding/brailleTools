@@ -95,7 +95,7 @@ func main() {
 		r := bufio.NewReader(os.Stdin)
 		for {
 			c, l, err := r.ReadRune()
-			if l == 0 {
+			if err == io.EOF {
 				break
 			}
 			if err != nil {
@@ -103,6 +103,9 @@ func main() {
 					break
 				}
 				panic(err)
+			}
+			if l == 0 {
+				continue
 			}
 			if 0x2800 <= c && c < 0x28FF {
 				fmt.Printf("%s", string(asciiPerm[c-0x2800]))
