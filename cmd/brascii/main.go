@@ -176,7 +176,7 @@ func contractionOf(v int) string {
 
 func findName(v int) string {
 	if 0x80 <= v && v <= 0xA0 {
-		return "---"
+		return "UNK"
 	}
 	n, ok := names[v]
 	if ok {
