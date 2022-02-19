@@ -129,6 +129,10 @@ func brailleTable() {
 	fmt.Printf("> The 6-dot standard is 0x20 to 0x5F with dot7 masked off.\n")
 	fmt.Printf("> Bottom half of standard is used for control codes 0x00 to 0x19.\n")
 	fmt.Printf("\n")
+	for j := 0; j < period; j++ {
+		fmt.Printf("|-----------")
+	}
+	fmt.Printf("|\n")
 	for j := 0; j < 16; j++ {
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
