@@ -78,6 +78,7 @@ var present = make([]int, 256)
 
 // Byte by byte translation to braille
 func main() {
+	sixDot := flag.Bool("sixdot", false, "decode as 6-dot ascii braille")
 	decode := flag.Bool("decode", false, "decode braile to ascii binary")
 	isBinary := flag.Bool("binary", false, "literal binary translation, even of CR/LF")
 	keepCR := flag.Bool("keep-cr", false, "keep literal CR so that binary back translate is still unambiguous")
@@ -124,15 +125,21 @@ func main() {
 			v := int(b[0])
 			// Encode bytes to braille
 			if *isBinary == false {
-				if b[0] == '\n' {
+				if v == '\n' {
 					fmt.Printf("\n")
 					continue
 				}
-				if b[0] == '\r' && *keepCR == false {
+				if v == '\r' && *keepCR == false {
 					continue
 				}
 			}
-			fmt.Printf("%s", string(braillePerm[v]+0x2800))
+			var c int
+			if *sixDot {
+				c = (braillePerm[v] & 0x3F)+0x2800
+			} else {
+				c = braillePerm[v]+0x2800
+			}
+			fmt.Printf("%s", string(c))
 		}
 	}
 }
