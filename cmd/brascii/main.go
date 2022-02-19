@@ -192,7 +192,6 @@ func brailleTable() {
 	fmt.Printf("> Bottom half of standard is used for control codes 0x00 to 0x19.\n")
 	fmt.Printf("\n")
 
-	fmt.Printf("<nobr>\n")
 	fmt.Printf("|         ")
 	for i := 0; i < period; i++ {
 		fmt.Printf("|       _%X",i)
@@ -205,15 +204,16 @@ func brailleTable() {
 	}
 	fmt.Printf("|\n")
 	for j := 0; j < 16; j++ {
+		fmt.Printf("<nobr>")
 		fmt.Printf("|       %X_",j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
 			fmt.Printf("| %s %3s   ", string(braillePerm[c]+0x2800), findName(c))
 		}
+		fmt.Printf("</nobr>")
 		fmt.Printf("|\n")
 	}
 	fmt.Printf("|\n")
-	fmt.Printf("</nobr>\n")
 }
 
 // Byte by byte translation to braille
