@@ -107,7 +107,7 @@ func main() {
 			if l == 0 {
 				continue
 			}
-			if 0x2800 <= c && c < 0x28FF {
+			if 0x2800 <= c && c <= 0x28FF {
 				fmt.Printf("%s", string(asciiPerm[c-0x2800]))
 			} else {
 				fmt.Printf("%s", string(c))
@@ -141,9 +141,9 @@ func main() {
 			}
 			var c int
 			if *sixDot {
-				c = (braillePerm[v] & 0x3F)+0x2800
+				c = (braillePerm[v] & 0x3F) + 0x2800
 			} else {
-				c = braillePerm[v]+0x2800
+				c = braillePerm[v] + 0x2800
 			}
 			fmt.Printf("%s", string(c))
 		}
