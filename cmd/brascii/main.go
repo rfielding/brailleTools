@@ -185,7 +185,7 @@ func findName(v int) string {
 	return string(v)
 }
 
-func brailleTable() {
+func brailleTable(isGithub bool) {
 	period := 16
 	fmt.Printf("## Braille Binary\n\n")
 	fmt.Printf("> The 6-dot standard is 0x20 to 0x5F with dot7 masked off.\n")
@@ -194,7 +194,7 @@ func brailleTable() {
 
 	fmt.Printf("|   ")
 	for i := 0; i < period; i++ {
-		fmt.Printf("|\u25A0\u25A0\u25A0\u25A0 _%X",i)
+		fmt.Printf("|     _%X",i)
 	}
 	fmt.Printf("|\n")
 
@@ -207,7 +207,11 @@ func brailleTable() {
 		fmt.Printf("| %X_",j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
-			fmt.Printf("| %s %3s ", string(braillePerm[c]+0x2800), findName(c))
+			gh := " <br> "
+			if isGithub {
+				gh = "<br>"
+			}
+			fmt.Printf("| %s%s%3s ", string(braillePerm[c]+0x2800), gh, findName(c))
 		}
 		fmt.Printf("|\n")
 	}
@@ -217,6 +221,7 @@ func brailleTable() {
 // Byte by byte translation to braille
 func main() {
 	table := flag.Bool("table", false, "generate a table")
+	tableGithub := flag.Bool("table-github", false, "generate a table for rendering")
 	sixDot := flag.Bool("sixdot", false, "decode as 6-dot ascii braille")
 	decode := flag.Bool("decode", false, "decode braile to ascii binary")
 	isBinary := flag.Bool("binary", false, "literal binary translation, even of CR/LF")
@@ -229,7 +234,7 @@ func main() {
 	}
 	brailleInit()
 	if *table {
-		brailleTable()
+		brailleTable(*tableGithub)
 		os.Exit(0)
 	}
 	// Setup the reverse table to convert braille to ascii
