@@ -194,7 +194,7 @@ func brailleTable() {
 
 	fmt.Printf("|         ")
 	for i := 0; i < period; i++ {
-		fmt.Printf("|second _%X",i)
+		fmt.Printf("|\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0 _%X",i)
 	}
 	fmt.Printf("|\n")
 
