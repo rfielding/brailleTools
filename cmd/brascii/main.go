@@ -75,9 +75,75 @@ func brailleInit() {
 
 var asciiPerm = make([]int, 256)
 var present = make([]int, 256)
+var names = map[int]string {
+  0x00: "NUL",
+  0x01: "SOH",
+  0x02: "STX",
+  0x03: "ETX",
+  0x04: "EOT",
+  0x05: "ENQ",
+  0x06: "ACK",
+  0x07: "BEL",
+  0x08: "BS",
+  0x09: "HT",
+  0x0A: "LF",
+  0x0B: "VT",
+  0x0C: "FF",
+  0x0D: "CR",
+  0x0E: "SO",
+  0x0F: "SI",
+  0x10: "DLE",
+  0x11: "DC1",
+  0x12: "DC2",
+  0x13: "DC3",
+  0x14: "DC4",
+  0x15: "NAK",
+  0x16: "SYN",
+  0x17: "ETB",
+  0x18: "CAN",
+  0x19: "EM",
+  0x20: "SPC",
+  0x1A: "SUB",
+  0x1B: "ESC",
+  0x1C: "FS",
+  0x1D: "GS",
+  0x1E: "RS",
+  0x1F: "US",
+  0x7F: "DEL",
+}
+
+func findName(v int) string {
+  if 0x80 <= v && v <= 0xA0 {
+    return "---"
+  }
+  n, ok := names[v]
+  if ok {
+    return n
+  }
+  return string(v)
+}
+
+
+func brailleTable() {
+	period := 8
+	fmt.Printf("## Braille Binary\n")
+	fmt.Printf("> The 6-dot standard is 0x20 to 0x5F with dot7 masked off.\n")
+	fmt.Printf("> Bottom half of standard is used for control codes 0x00 to 0x19.\n")
+	for j := 0; j < 16; j++ {
+		for i := 0; i < 16; i++ {
+			c := 16*j+i
+			if (c % period) == 0 && c > 0 {
+				fmt.Printf("|\n")
+			}
+			fmt.Printf("| %02x %3s %s  ", c, findName(c), string(braillePerm[c]+0x2800))
+		}
+	}
+	fmt.Printf("|\n")
+}
 
 // Byte by byte translation to braille
 func main() {
+	table := flag.Bool("table", false, "generate a table")
 	sixDot := flag.Bool("sixdot", false, "decode as 6-dot ascii braille")
 	decode := flag.Bool("decode", false, "decode braile to ascii binary")
 	isBinary := flag.Bool("binary", false, "literal binary translation, even of CR/LF")
@@ -89,6 +155,10 @@ func main() {
 		os.Exit(0)
 	}
 	brailleInit()
+	if *table {
+		brailleTable()
+		os.Exit(0)
+	}
 	// Setup the reverse table to convert braille to ascii
 
 	if *decode == true {
