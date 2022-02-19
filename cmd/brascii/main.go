@@ -113,6 +113,44 @@ var names = map[int]string{
 	0x7F: "DEL",
 }
 
+var contractions = map[int]string {
+  0x21: "the",
+  0x23: "Num",
+  0x24: "ed",
+  0x25: "sh",
+  0x26: "and",
+  0x27: "'",
+  0x28: "of",
+  0x29: "with",
+  0x2A: "ch",
+  0x2B: "ing",
+  0x2D: "-",
+  0x2F: "st",
+  0x32: ";",
+  0x33: ":",
+  0x34: ".",
+  0x35: "en",
+  0x36: "!",
+  0x38: "?",
+  0x39: "in",
+  0x3A: "wh",
+  0x3C: "gh",
+  0x3D: "for",
+  0x3E: "ar",
+  0x3F: "th",
+  0x5B: "ow",
+  0x5C: "ou",
+  0x5D: "er", 
+}
+
+func contractionOf(v int) string {
+	n, ok := contractions[v]
+	if ok {
+		return n
+	}
+	return "" 
+}
+
 func findName(v int) string {
 	if 0x80 <= v && v <= 0xA0 {
 		return "---"
@@ -132,11 +170,11 @@ func brailleTable() {
 	fmt.Printf("\n")
 
 	for j := 0; j < period; j++ {
-		fmt.Printf("|         %02x",j)
+		fmt.Printf("|             %02x",j)
 	}
 	fmt.Printf("|\n")
 	for j := 0; j < period; j++ {
-		fmt.Printf("|-----------")
+		fmt.Printf("|---------------")
 	}
 	fmt.Printf("|\n")
 	for j := 0; j < 16; j++ {
@@ -145,7 +183,7 @@ func brailleTable() {
 			if (c%period) == 0 && c > 0 {
 				fmt.Printf("|\n")
 			}
-			fmt.Printf("| %02x %3s %s  ", c, findName(c), string(braillePerm[c]+0x2800))
+			fmt.Printf("| %02x %3s %s  %4s", c, findName(c), string(braillePerm[c]+0x2800), contractionOf(c))
 		}
 	}
 	fmt.Printf("|\n")
