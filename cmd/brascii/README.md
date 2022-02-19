@@ -3,7 +3,7 @@
 > The 6-dot standard is 0x20 to 0x5F with dot7 masked off.
 > Bottom half of standard is used for control codes 0x00 to 0x19.
 
-|         |...... _0|...... _1|...... _2|...... _3|...... _4|...... _5|...... _6|...... _7|...... _8|...... _9|...... _A|...... _B|...... _C|...... _D|...... _E|...... _F|
+|         |second _0|second _1|second _2|second _3|second _4|second _5|second _6|second _7|second _8|second _9|second _A|second _B|second _C|second _D|second _E|second _F|
 |---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|
 |       0_| ⡀ NUL   | ⡮ SOH   | ⡐ STX   | ⡼ ETX   | ⡫ EOT   | ⡩ ENQ   | ⡯ ACK   | ⡄ BEL   | ⡷  BS   | ⡾ TAB   | ⡡  LF   | ⡬  VT   | ⡠  FF   | ⡤  CR   | ⡨  SO   | ⡌  SI   |
 |       1_| ⡴ DLE   | ⡂ DC1   | ⡆ DC2   | ⡒ DC3   | ⡲ DC4   | ⡢ NAK   | ⡖ SYN   | ⡶ ETB   | ⡦ CAN   | ⡔  EM   | ⡱ SUB   | ⡰ ESC   | ⡣  FS   | ⡿  GS   | ⡜  RS   | ⡹  US   |
