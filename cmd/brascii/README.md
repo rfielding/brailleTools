@@ -3,6 +3,7 @@
 > The 6-dot standard is 0x20 to 0x5F with dot7 masked off.
 > Bottom half of standard is used for control codes 0x00 to 0x19.
 
+|         00|         01|         02|         03|         04|         05|         06|         07|
 |-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | 00 NUL ⡀  | 01 SOH ⡮  | 02 STX ⡐  | 03 ETX ⡼  | 04 EOT ⡫  | 05 ENQ ⡩  | 06 ACK ⡯  | 07 BEL ⡄  |
 | 08  BS ⡷  | 09  HT ⡾  | 0a  LF ⡡  | 0b  VT ⡬  | 0c  FF ⡠  | 0d  CR ⡤  | 0e  SO ⡨  | 0f  SI ⡌  |
