@@ -113,12 +113,15 @@ func main() {
 	} else {
 		b := make([]byte, 1)
 		for {
-			count, _ := os.Stdin.Read(b)
+			// read BYTES, not runes
+			count, err := os.Stdin.Read(b)
 			// Assume that we only get 0 bytes when no data
-			if count == 0 {
+			if err == io.EOF {
 				break
 			}
-
+			if err != nil {
+				panic(err)
+			}
 			if count == 0 {
 				continue
 			}
