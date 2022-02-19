@@ -85,7 +85,7 @@ var names = map[int]string{
 	0x06: "ACK",
 	0x07: "BEL",
 	0x08: "BS",
-	0x09: "HT",
+	0x09: "TAB",
 	0x0A: "LF",
 	0x0B: "VT",
 	0x0C: "FF",
