@@ -186,28 +186,30 @@ func findName(v int) string {
 }
 
 func brailleTable() {
-	period := 8
+	period := 16
 	fmt.Printf("## Braille Binary\n\n")
 	fmt.Printf("> The 6-dot standard is 0x20 to 0x5F with dot7 masked off.\n")
 	fmt.Printf("> Bottom half of standard is used for control codes 0x00 to 0x19.\n")
 	fmt.Printf("\n")
 
-	for j := 0; j < period; j++ {
-		fmt.Printf("|         %02x",j)
+	fmt.Printf("|       ")
+	for i := 0; i < period; i++ {
+		fmt.Printf("|     _%x",i)
 	}
 	fmt.Printf("|\n")
-	for j := 0; j < period; j++ {
-		fmt.Printf("|-----------")
+	fmt.Printf("|-------")
+	for i := 0; i < period; i++ {
+		fmt.Printf("|-------")
 	}
 	fmt.Printf("|\n")
+
 	for j := 0; j < 16; j++ {
+		fmt.Printf("|     %x_",j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
-			if (c%period) == 0 && c > 0 {
-				fmt.Printf("|\n")
-			}
-			fmt.Printf("| %02x %s %3s ", c, string(braillePerm[c]+0x2800), findName(c))
+			fmt.Printf("| %s %3s ", string(braillePerm[c]+0x2800), findName(c))
 		}
+		fmt.Printf("|\n")
 	}
 	fmt.Printf("|\n")
 }
