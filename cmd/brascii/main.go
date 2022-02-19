@@ -109,6 +109,7 @@ var names = map[int]string{
 	0x1D: "GS",
 	0x1E: "RS",
 	0x1F: "US",
+	0x7C: "\\|",
 	0x7F: "DEL",
 }
 
