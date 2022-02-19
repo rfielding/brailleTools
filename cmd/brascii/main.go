@@ -194,7 +194,7 @@ func brailleTable() {
 
 	fmt.Printf("|         ")
 	for i := 0; i < period; i++ {
-		fmt.Printf("|       _%X",i)
+		fmt.Printf("|...... _%X",i)
 	}
 	fmt.Printf("|\n")
 
@@ -204,13 +204,11 @@ func brailleTable() {
 	}
 	fmt.Printf("|\n")
 	for j := 0; j < 16; j++ {
-		fmt.Printf("<nobr>")
 		fmt.Printf("|       %X_",j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
 			fmt.Printf("| %s %3s   ", string(braillePerm[c]+0x2800), findName(c))
 		}
-		fmt.Printf("</nobr>")
 		fmt.Printf("|\n")
 	}
 	fmt.Printf("|\n")
