@@ -114,57 +114,57 @@ var names = map[int]string{
 	0x7F: "DEL",
 }
 
-var contractions = map[int]string {
-  0x21: "the",
-  0x23: "Num",
-  0x24: "ed",
-  0x25: "sh",
-  0x26: "and",
-  0x27: "'",
-  0x28: "of",
-  0x29: "with",
-  0x2A: "ch",
-  0x2B: "ing",
-  0x2D: "-",
-  0x2F: "st",
-  0x32: ";",
-  0x33: ":",
-  0x34: ".",
-  0x35: "en",
-  0x36: "!",
-  0x38: "?",
-  0x39: "in",
-  0x3A: "wh",
-  0x3C: "gh",
-  0x3D: "for",
-  0x3E: "ar",
-  0x3F: "th",
-  0x42: "but",
-  0x43: "can",
-  0x44: "do",
-  0x45: "every",
-  0x46: "from",
-  0x47: "go",
-  0x48: "have",
-  0x4A: "just",
-  0x4B: "knowledge",
-  0x4C: "like",
-  0x4D: "more",
-  0x4E: "not",
-  0x50: "people",
-  0x51: "quite",
-  0x52: "rather",
-  0x53: "so",
-  0x54: "that",
-  0x55: "us",
-  0x56: "very",
-  0x57: "will",
-  0x58: "it",
-  0x59: "you",
-  0x5A: "as", 
-  0x5B: "ow",
-  0x5C: "ou",
-  0x5D: "er", 
+var contractions = map[int]string{
+	0x21: "the",
+	0x23: "Num",
+	0x24: "ed",
+	0x25: "sh",
+	0x26: "and",
+	0x27: "'",
+	0x28: "of",
+	0x29: "with",
+	0x2A: "ch",
+	0x2B: "ing",
+	0x2D: "-",
+	0x2F: "st",
+	0x32: ";",
+	0x33: ":",
+	0x34: ".",
+	0x35: "en",
+	0x36: "!",
+	0x38: "?",
+	0x39: "in",
+	0x3A: "wh",
+	0x3C: "gh",
+	0x3D: "for",
+	0x3E: "ar",
+	0x3F: "th",
+	0x42: "but",
+	0x43: "can",
+	0x44: "do",
+	0x45: "every",
+	0x46: "from",
+	0x47: "go",
+	0x48: "have",
+	0x4A: "just",
+	0x4B: "knowledge",
+	0x4C: "like",
+	0x4D: "more",
+	0x4E: "not",
+	0x50: "people",
+	0x51: "quite",
+	0x52: "rather",
+	0x53: "so",
+	0x54: "that",
+	0x55: "us",
+	0x56: "very",
+	0x57: "will",
+	0x58: "it",
+	0x59: "you",
+	0x5A: "as",
+	0x5B: "ow",
+	0x5C: "ou",
+	0x5D: "er",
 }
 
 func contractionOf(v int) string {
@@ -172,7 +172,7 @@ func contractionOf(v int) string {
 	if ok {
 		return n
 	}
-	return "" 
+	return ""
 }
 
 func findName(v int) string {
@@ -195,7 +195,7 @@ func brailleTable(isGithub bool) {
 
 	fmt.Printf("|   ")
 	for i := 0; i < period; i++ {
-		fmt.Printf("|     _%X",i)
+		fmt.Printf("|     _%X", i)
 	}
 	fmt.Printf("|\n")
 
@@ -205,7 +205,7 @@ func brailleTable(isGithub bool) {
 	}
 	fmt.Printf("|\n")
 	for j := 0; j < 16; j++ {
-		fmt.Printf("| %X_",j)
+		fmt.Printf("| %X_", j)
 		for i := 0; i < 16; i++ {
 			c := 16*j + i
 			gh := " "
