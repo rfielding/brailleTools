@@ -44,7 +44,8 @@ func brailleInit() {
 		braillePerm[0x20+i] = brailleAsciiPattern[i]
 	}
 	// Flip the case of the alphabet
-	for i := 0x41; i <= 0x5A; i++ {
+	//for i := 0x41; i <= 0x5A; i++ {
+	for i := 0x40; i <= 0x60; i++ {
 		braillePerm[i] = braillePerm[i] ^ 0x40
 	}
 	// Copy lower half of standard to cover control codes
