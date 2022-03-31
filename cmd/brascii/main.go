@@ -221,7 +221,7 @@ func brailleTable(isGithub bool) {
 
 // Byte by byte translation to braille
 func main() {
-	tabSize := flag.Int("tabSize", 2, "size of a tab in spaces. zero means literal.")
+	tabSize := flag.Int("tabSize", 8, "size of a tab in spaces. zero means literal.")
 	table := flag.Bool("table", false, "generate a table")
 	tableGithub := flag.Bool("table-github", false, "generate a table for rendering")
 	sixDot := flag.Bool("sixdot", false, "decode as 6-dot ascii braille")
@@ -285,11 +285,9 @@ func main() {
 			v := int(b[0])
 			// Encode bytes to braille
 			if *isBinary == false {
-				if v == '\t' {
-					if *tabSize > 0 {
-						for i := 0; i < *tabSize; i++ {
-							fmt.Printf(" ")
-						}
+				if v == '\t' && *tabSize > 0 {
+					for i := 0; i < *tabSize; i++ {
+						fmt.Printf(" ")
 					}
 					continue
 				}
