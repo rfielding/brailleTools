@@ -3,7 +3,7 @@ Teeny
 
 What started out as a braille editor has turned into a computer-braille tool similar to liblouis.
 
-!(brascii.png)[brascii.png]
+![brascii.png](brascii.png)
 
 # Brascii
 
