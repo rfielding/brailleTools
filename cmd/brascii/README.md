@@ -22,3 +22,6 @@
 | E_| ⢈ <br>   à | ⢁ <br>   á | ⢃ <br>   â | ⢉ <br>   ã | ⢙ <br>   ä | ⢑ <br>   å | ⢋ <br>   æ | ⢛ <br>   ç | ⢓ <br>   è | ⢊ <br>   é | ⢚ <br>   ê | ⢅ <br>   ë | ⢇ <br>   ì | ⢍ <br>   í | ⢝ <br>   î | ⢕ <br>   ï |
 | F_| ⢏ <br>   ð | ⢟ <br>   ñ | ⢗ <br>   ò | ⢎ <br>   ó | ⢞ <br>   ô | ⢥ <br>   õ | ⢧ <br>   ö | ⢺ <br>   ÷ | ⢭ <br>   ø | ⢽ <br>   ù | ⢵ <br>   ú | ⢪ <br>   û | ⢳ <br>   ü | ⢻ <br>   ý | ⢘ <br>   þ | ⢸ <br>   ÿ |
 
+The font you see in github is the mercy of your brwoser.  The Unicode braille I see in Chrome is awful by default.  This is what I see when I import this trutype font.
+
+![termprofile.png](termprofile.png)
