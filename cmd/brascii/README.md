@@ -22,6 +22,6 @@
 | E_| ⢈ <br>   à | ⢁ <br>   á | ⢃ <br>   â | ⢉ <br>   ã | ⢙ <br>   ä | ⢑ <br>   å | ⢋ <br>   æ | ⢛ <br>   ç | ⢓ <br>   è | ⢊ <br>   é | ⢚ <br>   ê | ⢅ <br>   ë | ⢇ <br>   ì | ⢍ <br>   í | ⢝ <br>   î | ⢕ <br>   ï |
 | F_| ⢏ <br>   ð | ⢟ <br>   ñ | ⢗ <br>   ò | ⢎ <br>   ó | ⢞ <br>   ô | ⢥ <br>   õ | ⢧ <br>   ö | ⢺ <br>   ÷ | ⢭ <br>   ø | ⢽ <br>   ù | ⢵ <br>   ú | ⢪ <br>   û | ⢳ <br>   ü | ⢻ <br>   ý | ⢘ <br>   þ | ⢸ <br>   ÿ |
 
-The font you see in github is the mercy of your brwoser.  The Unicode braille I see in Chrome is awful by default.  This is what I see when I import this trutype font.
+The font you see in github is at the mercy of your brwoser.  The Unicode braille I see in Chrome is awful by default; because the guide dots make it completely illegible.  This is what I see when I import this trutype font. There is a single guide dot just under the standard 6-dot dots, and above the extended dots 7 and 8, which only exist on computer terminals.  You can set the spacing between chars and lines to your liking.  It's more legible if they are spaced wider.  With the guide dot, you won't get confused about where the cells are.
 
 ![termprofile.png](termprofile.png)
