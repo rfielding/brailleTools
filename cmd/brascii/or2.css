@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "orbitreader2";
+  src: url("orbitreader2.woff") format('woff');
+}
+
+.brl {
+  font-size:32;
+  font-family: orbitreader2
+}
