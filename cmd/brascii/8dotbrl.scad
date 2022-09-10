@@ -7,7 +7,8 @@ mm=1.0;
 dots=8;
 
 // standard spacing between dot centers
-dot2dot=2.5*mm;
+dot2dotH=2.5*mm;
+dot2dotV=2.5*mm;
 
 // extra spacing between lines (in addition to between dots
 lineExtra=0.4*mm;
@@ -28,6 +29,11 @@ dome=0.75;
 cols=28;
 rows=4;
 
+//// bugs:
+// - need to do this so that when you do double-sided, the dots don't
+//   collide when you line up markers on front and back.
+//   that means putting dots at + 0.5*dot2dot on opposite sides
+
 // The thickness of the slate parts are important in 
 // getting consistent dot placements; especially dot alignment
 thickness = stylusDiameter;
@@ -45,25 +51,20 @@ $fs=0.4;
 // The actual radius of the stylus is used a lot
 stylusRadius=stylusDiameter/2;
 
-// When rendering more than 6-dots, make it easy to ignore the extra dots
-// in the template, by making barriers around them larger
-bigDots=6;
-
 // The distance from dot1 between lines is derived.
 // The dot2dot and line extra are indirect control of this
-line2line=(dots/2)*dot2dot*mm + lineExtra;
+line2line=(dots/2)*dot2dotV*mm + lineExtra;
 
-fitmargin = 0.995;
-lockwidth=0.85;
+lockwidth=0.7;
 
-marginCell=(cell2cell-dot2dot)/2;
-marginLine=(line2line-((dots/2)-1)*dot2dot)/2;
+marginCell=(cell2cellH-dot2dotH)/2;
+marginLine=(line2line-((dots/2)-1)*dot2dotV)/2;
 
 //// This is the bottom part of the slate
 // it features domed holes, and a punch to keep paper from moving,
 // and a lock to ensure that it is aligned
 
-translate([1,-cell2cell*cols/2,0])
+translate([2*mm,-cell2cell*cols/2,0])
 union() {
     // These cones must line up when template is moved
     // Make them as short as possible to prevent breakage
@@ -76,16 +77,41 @@ union() {
     translate([line2line*rows+lineExtra,cell2cell*(cols+1),thickness])
         cylinder(stylusDiameter/2, stylusRadius, 0);
     
-    translate([(dot2dot+lineExtra)/2,cell2cell*(cols+2)-stylusDiameter,0])
-        scale([line2line*(rows)*fitmargin, stylusDiameter*lockwidth*fitmargin, thickness*2])
-            cube(1);
+    // Make the barrier that paper is placed against a trapezoid,
+    // so that it does not get stuck on the template,
+    // and template can flex around until it touches the backing.
+    atx = (dot2dotV+lineExtra)/2;
+    aty = cell2cell*(cols+2)-stylusDiameter;
+    atz = 0;
+    sx = line2line*rows;
+    sy = stylusDiameter*lockwidth;
+    sz = thickness*2;
+    w = 10;
+    difference() {
+        union() {
+            translate([atx,aty,atz])
+                scale([sx, sy, sz])
+                    cube(1);
+        }
+        union() {
+            translate([atx-sx/4,aty+2,atz])
+                rotate([20,0,0])
+                    scale([sx*2, sy, 2*sz])
+                        cube(1);
+            translate([atx+sx,aty-w/2,atz+thickness])
+                rotate([0,-20,0])
+                scale([w,w,w])
+                    cube(1);
+            
+        }
+    }
     
     // invert this to be union to inspect the dome quality that should result.
     // there is an assumption that this dome matches your stylus tip.
     difference() {        
         translate([0,-2*cell2cell,0])
         scale([
-          line2line*(rows)+dot2dot+lineExtra,
+          line2line*(rows)+dot2dotV+lineExtra,
           cell2cell*(cols+4),
           thickness
         ])
@@ -95,8 +121,8 @@ union() {
                 for(cd=[0:1]) {
                     for(rd=[0:(dots/2)-1]) {
                         translate([
-                            marginLine + r*line2line + rd*dot2dot,
-                            marginCell + c*cell2cell + cd*dot2dot,
+                            marginLine + r*line2line + rd*dot2dotV,
+                            marginCell + c*cell2cell + cd*dot2dotH,
                             thickness
                         ])
                         scale([1,1,dome])
@@ -111,13 +137,12 @@ union() {
 /// This is the template on top
 // Notice that we inverted one axis to compensate for flipping the print over
 // because the surface contacting is on top
-scale([-1,1,1])
-translate([1,-cell2cell*cols/2,0])
+translate([-4*mm-line2line*rows-lineExtra,-cell2cell*cols/2,0])
 difference() {
     union() {
         translate([0,-2*cell2cell,0])
         scale([
-          line2line*(rows)+dot2dot+lineExtra,
+          line2line*(rows)+dot2dotV+lineExtra,
           cell2cell*(cols+4),
           thickness
         ])
@@ -133,7 +158,7 @@ difference() {
         translate([line2line*rows+lineExtra,cell2cell*(cols+1),-thickness])
             cylinder(3*thickness, stylusRadius, stylusRadius);
         
-        translate([(dot2dot+lineExtra)/2,cell2cell*(cols+2)-stylusDiameter,-thickness])
+        translate([(dot2dotV+lineExtra)/2,cell2cell*(cols+2)-stylusDiameter,-thickness])
             scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
                 cube(1);
         
@@ -142,8 +167,8 @@ difference() {
                 for(cd=[0:1]) {                    
                     for(rd=[0:(dots/2)-1]) {
                         translate([
-                            marginLine + r*line2line + rd*dot2dot,
-                            marginCell + c*cell2cell + cd*dot2dot,
+                            marginLine + r*line2line + rd*dot2dotV,
+                            marginCell + c*cell2cell + cd*dot2dotH,
                             -thickness
                         ])
                         cylinder(
@@ -158,27 +183,13 @@ difference() {
                         marginLine + r*line2line - stylusRadius,
                         marginCell + c*cell2cell - (1.6)*stylusDiameter/6,
                         -thickness
-                    ])                    
+                    ])     
                     scale([
-                        ((bigDots/2)-0.7)*dot2dot + stylusRadius,
-                        dot2dot + stylusRadius,
+                        ((dots/2)-1)*dot2dotV + stylusDiameter,
+                        dot2dotH + stylusRadius,
                         3*thickness
                     ])
                     cube(1);
-                    // hack! i have no idea
-                    if(dots>6) {
-                        translate([
-                            marginLine + r*line2line - stylusDiameter/16,
-                            marginCell + c*cell2cell - (0.5)*stylusDiameter/12,
-                            -thickness
-                        ])                    
-                        scale([
-                            ((dots/2)-0.5)*dot2dot - stylusDiameter/16,
-                            dot2dot + stylusDiameter/24,
-                            3*thickness
-                        ])
-                        cube(1);    
-                    }                
                 }
             }
         }        
