@@ -1,24 +1,34 @@
 //// parameters of cell
+// Note that the primary challenge for making braille
+// templates is in taking the geometry of the stylus into account
+//
+// You generally want to re-use the same stylus for many fonts.
+// Flex the dimensions around it, while respecting the stylus.
+// This means that measurements from center to center are used.
+// The dome at the end of tip stylus must be taken into account.
+// It is usually not a half-sphere, but a flattened half-sphere.
+// Most paper will rip if it is a half-spere; with every dot
+// making a small hole that feels different in texture.
 
-// This is the millimeter unit. Multiply any lenghts times this
-mm=1.0; 
 
 // Set to this either 6 or 8, for the kind of braille
 dots=8;
 
-// standard spacing between dot centers
-dot2dotH=2.5*mm;
-dot2dotV=2.5*mm;
+// standard spacing between dot centers is 2.5. As low as 2.0 works,
+// which is the stylus diameter
+dot2dotH=2.3;
+dot2dotV=2.3;
 
 // extra spacing between lines (in addition to between dots
-lineExtra=0.4*mm;
+lineExtra=0.4;
 
 // spacing between cells at same dot
-cell2cell=6.0*mm;
+cell2cell=6.0;
 
 // the diameter of the stylus
 // this is very important to get proper domes
-stylusDiameter=2*mm;
+// if it's too large, then dots will be in wrong places.
+stylusDiameter=2;
 
 // A value of 1.0 is a perfectly round dome.
 // A perfectly round dome leaves rather large holes with paper rips
@@ -37,6 +47,7 @@ rows=4;
 // The thickness of the slate parts are important in 
 // getting consistent dot placements; especially dot alignment
 thickness = stylusDiameter;
+pinheight=0.75;
 
 //// rendering detail
 // 15 degree features
@@ -53,29 +64,29 @@ stylusRadius=stylusDiameter/2;
 
 // The distance from dot1 between lines is derived.
 // The dot2dot and line extra are indirect control of this
-line2line=(dots/2)*dot2dotV*mm + lineExtra;
+line2line=(dots/2)*dot2dotV + lineExtra;
 
 lockwidth=0.7;
 
-marginCell=(cell2cellH-dot2dotH)/2;
+marginCell=(cell2cell-dot2dotH)/2;
 marginLine=(line2line-((dots/2)-1)*dot2dotV)/2;
 
 //// This is the bottom part of the slate
 // it features domed holes, and a punch to keep paper from moving,
 // and a lock to ensure that it is aligned
 
-translate([2*mm,-cell2cell*cols/2,0])
+translate([2,-cell2cell*cols/2,0])
 union() {
     // These cones must line up when template is moved
     // Make them as short as possible to prevent breakage
     translate([stylusDiameter,cell2cell*(-1),thickness])
-        cylinder(stylusDiameter/2, stylusRadius, 0);
+        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
     translate([stylusDiameter,cell2cell*(cols+1),thickness])
-        cylinder(stylusDiameter/2, stylusRadius, 0);
+        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
     translate([line2line*rows+lineExtra,cell2cell*(-1),thickness])
-        cylinder(stylusDiameter/2, stylusRadius, 0);
+        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
     translate([line2line*rows+lineExtra,cell2cell*(cols+1),thickness])
-        cylinder(stylusDiameter/2, stylusRadius, 0);
+        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
     
     // Make the barrier that paper is placed against a trapezoid,
     // so that it does not get stuck on the template,
@@ -105,9 +116,8 @@ union() {
             
         }
     }
-    
-    // invert this to be union to inspect the dome quality that should result.
-    // there is an assumption that this dome matches your stylus tip.
+
+    // This is the pits in the backing
     difference() {        
         translate([0,-2*cell2cell,0])
         scale([
@@ -116,6 +126,8 @@ union() {
           thickness
         ])
         cube(1);
+        // This is so that double-sided notes don't collide
+        translate([dot2dotV/2, -dot2dotH/2,0])
         for(c=[0:cols-1]) {
             for(r=[0:rows-1]) {
                 for(cd=[0:1]) {
@@ -137,8 +149,9 @@ union() {
 /// This is the template on top
 // Notice that we inverted one axis to compensate for flipping the print over
 // because the surface contacting is on top
-translate([-4*mm-line2line*rows-lineExtra,-cell2cell*cols/2,0])
+translate([-4-line2line*rows-lineExtra,-cell2cell*cols/2,0])
 difference() {
+    // main backing
     union() {
         translate([0,-2*cell2cell,0])
         scale([
@@ -148,7 +161,9 @@ difference() {
         ])
         cube(1);
     }
+    // drilled out items
     union() {
+        // positioning pins
         translate([stylusDiameter,cell2cell*(-1),-thickness])
             cylinder(3*thickness, stylusRadius, stylusRadius);
         translate([stylusDiameter,cell2cell*(cols+1),-thickness])
@@ -158,10 +173,17 @@ difference() {
         translate([line2line*rows+lineExtra,cell2cell*(cols+1),-thickness])
             cylinder(3*thickness, stylusRadius, stylusRadius);
         
-        translate([(dot2dotV+lineExtra)/2,cell2cell*(cols+2)-stylusDiameter,-thickness])
-            scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
+        // slot to align template
+        translate([
+            (dot2dotV+lineExtra)/2,
+            cell2cell*(cols+2)-stylusDiameter,
+            -thickness
+        ])
+        scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
                 cube(1);
         
+        // This offset is so that double-sided notes dont collide
+        translate([dot2dotV/2,-dot2dotH/2,0])        
         for(c=[0:cols-1]) {
             for(r=[0:rows-1]) {
                 for(cd=[0:1]) {                    
