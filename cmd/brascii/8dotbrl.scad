@@ -47,13 +47,13 @@ rows=4;
 // The thickness of the slate parts are important in 
 // getting consistent dot placements; especially dot alignment
 thickness = stylusDiameter;
-pinheight=0.75;
+pinheight=0.85;
 
 //// rendering detail
 // 15 degree features
-$fa=15;
+$fa=30;
 // preferred length of smallest feature
-$fs=0.4;
+$fs=0.5;
 
 //
 // All parameters are derived after this
@@ -150,71 +150,85 @@ union() {
 // Notice that we inverted one axis to compensate for flipping the print over
 // because the surface contacting is on top
 translate([-4-line2line*rows-lineExtra,-cell2cell*cols/2,0])
-difference() {
-    // main backing
-    union() {
-        translate([0,-2*cell2cell,0])
-        scale([
-          line2line*(rows)+dot2dotV+lineExtra,
-          cell2cell*(cols+4),
-          thickness
-        ])
-        cube(1);
+union() {
+    for(c = [0:cols-1]) {
+        if(c%5==4) {
+            translate([
+                stylusRadius/2,
+                cell2cell*(cols-1-c)+dot2dotV/2,
+                thickness
+            ])
+            sphere(stylusRadius/2);
+        }    
     }
-    // drilled out items
-    union() {
-        // positioning pins
-        translate([stylusDiameter,cell2cell*(-1),-thickness])
-            cylinder(3*thickness, stylusRadius, stylusRadius);
-        translate([stylusDiameter,cell2cell*(cols+1),-thickness])
-            cylinder(3*thickness, stylusRadius, stylusRadius);
-        translate([line2line*rows+lineExtra,cell2cell*(-1),-thickness])
-            cylinder(3*thickness, stylusRadius, stylusRadius);
-        translate([line2line*rows+lineExtra,cell2cell*(cols+1),-thickness])
-            cylinder(3*thickness, stylusRadius, stylusRadius);
+    difference() {
+        // main backing board
+        union() {
+            translate([0,-2*cell2cell,0])
+            union() {
+                scale([
+                    line2line*(rows)+dot2dotV+lineExtra,
+                    cell2cell*(cols+4),
+                    thickness
+                ])
+                cube(1);
+            }
+        }
+        // drilled out items
+        union() {
+            // positioning pins
+            translate([stylusDiameter,cell2cell*(-1),-thickness])
+                cylinder(3*thickness, stylusRadius, stylusRadius);
+            translate([stylusDiameter,cell2cell*(cols+1),-thickness])
+                cylinder(3*thickness, stylusRadius, stylusRadius);
+            translate([line2line*rows+lineExtra,cell2cell*(-1),-thickness])
+                cylinder(3*thickness, stylusRadius, stylusRadius);
+            translate([line2line*rows+lineExtra,cell2cell*(cols+1),-thickness])
+                cylinder(3*thickness, stylusRadius, stylusRadius);
         
-        // slot to align template
-        translate([
-            (dot2dotV+lineExtra)/2,
-            cell2cell*(cols+2)-stylusDiameter,
-            -thickness
-        ])
-        scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
+            // slot to align template
+            translate([
+                (dot2dotV+lineExtra)/2,
+                cell2cell*(cols+2)-stylusDiameter,
+                -thickness
+            ])
+            scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
                 cube(1);
         
-        // This offset is so that double-sided notes dont collide
-        translate([dot2dotV/2,-dot2dotH/2,0])        
-        for(c=[0:cols-1]) {
-            for(r=[0:rows-1]) {
-                for(cd=[0:1]) {                    
-                    for(rd=[0:(dots/2)-1]) {
+            // This offset is so that double-sided notes dont collide
+            translate([dot2dotV/2,-dot2dotH/2,0])        
+            for(c=[0:cols-1]) {
+                for(r=[0:rows-1]) {
+                    for(cd=[0:1]) {                    
+                        for(rd=[0:(dots/2)-1]) {
+                            translate([
+                                marginLine + r*line2line + rd*dot2dotV,
+                                marginCell + c*cell2cell + cd*dot2dotH,
+                                -thickness
+                            ])
+                            cylinder(
+                                h=thickness*3,
+                                r1=stylusRadius,
+                                r2=stylusRadius
+                            );
+                        }
+                    }
+                    union() {
                         translate([
-                            marginLine + r*line2line + rd*dot2dotV,
-                            marginCell + c*cell2cell + cd*dot2dotH,
+                            marginLine + r*line2line - stylusRadius,
+                            marginCell + c*cell2cell - (1.6)*stylusDiameter/6,
                             -thickness
+                        ])     
+                        scale([
+                            ((dots/2)-1)*dot2dotV + stylusDiameter,
+                            dot2dotH + stylusRadius,
+                            3*thickness
                         ])
-                        cylinder(
-                            h=thickness*3,
-                            r1=stylusRadius,
-                            r2=stylusRadius
-                        );
+                        cube(1);
                     }
                 }
-                union() {
-                    translate([
-                        marginLine + r*line2line - stylusRadius,
-                        marginCell + c*cell2cell - (1.6)*stylusDiameter/6,
-                        -thickness
-                    ])     
-                    scale([
-                        ((dots/2)-1)*dot2dotV + stylusDiameter,
-                        dot2dotH + stylusRadius,
-                        3*thickness
-                    ])
-                    cube(1);
-                }
-            }
-        }        
+            }        
+        }
     }
 }
 
