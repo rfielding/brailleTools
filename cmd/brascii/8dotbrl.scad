@@ -23,21 +23,23 @@ dot2dotV=2.3;
 lineExtra=0.4;
 
 // spacing between cells at same dot
-cell2cell=6.0;
+cell2cell=6.0*(dot2dotH/2.5);
 
 // the diameter of the stylus
 // this is very important to get proper domes
 // if it's too large, then dots will be in wrong places.
 stylusDiameter=2;
+// The actual stylus bumps up against the template, but tip may be smaller;
+punchSmaller=0.8;
 
 // A value of 1.0 is a perfectly round dome.
 // A perfectly round dome leaves rather large holes with paper rips
 // A value of 0.75 gives a slightly flat ellipsoid pit
-dome=0.75;
+dome=0.5;
 
 // parameters of slate in rows and columns
 cols=28;
-rows=4;
+rows=6;
 
 //// bugs:
 // - need to do this so that when you do double-sided, the dots don't
@@ -46,7 +48,9 @@ rows=4;
 
 // The thickness of the slate parts are important in 
 // getting consistent dot placements; especially dot alignment
-thickness = stylusDiameter;
+// printing speed is affected by thickness, and it's less comfortable
+// to slip under paper if it's too thick, or too floppy from being too thin
+thickness = 1.5;
 pinheight=0.85;
 
 //// rendering detail
@@ -96,7 +100,7 @@ union() {
     atz = 0;
     sx = line2line*rows;
     sy = stylusDiameter*lockwidth;
-    sz = thickness*2;
+    sz = stylusDiameter*2;
     w = 10;
     difference() {
         union() {
@@ -138,7 +142,7 @@ union() {
                             thickness
                         ])
                         scale([1,1,dome])
-                        sphere(stylusRadius);
+                        sphere(stylusRadius*punchSmaller);
                     }
                 }
             }
@@ -151,26 +155,41 @@ union() {
 // because the surface contacting is on top
 translate([-4-line2line*rows-lineExtra,-cell2cell*cols/2,0])
 union() {
+    w = cell2cell*(cols+4);
+    h = line2line*rows+dot2dotV+lineExtra;
+    translate([
+        (stylusDiameter+line2line*rows+lineExtra)/2,
+        cell2cell*(cols+1),
+        thickness
+    ])
+    cylinder(stylusDiameter*pinheight, stylusRadius*2, stylusRadius*2);
+    
     for(c = [0:cols-1]) {
         if(c%5==4) {
-            translate([
-                stylusRadius/2,
-                cell2cell*(cols-1-c)+dot2dotV/2,
-                thickness
-            ])
+            a = stylusRadius/2;
+            b = cell2cell*(cols-1-c)+dot2dotV/2;
+            translate([a,b,thickness])
+            sphere(stylusRadius/2);
+            a2 = h-stylusRadius/2;
+            b2 = cell2cell*cols-b-dot2dotH;
+            translate([a2,b2,thickness])
             sphere(stylusRadius/2);
         }    
     }
+
+    a = (dot2dotV+lineExtra)/2;
+    b = cell2cell*(cols+2)-stylusDiameter;
+    sx = line2line*rows;
+    sy = stylusDiameter*lockwidth;
+    sz = 3*thickness;
+    
+       
     difference() {
         // main backing board
         union() {
             translate([0,-2*cell2cell,0])
             union() {
-                scale([
-                    line2line*(rows)+dot2dotV+lineExtra,
-                    cell2cell*(cols+4),
-                    thickness
-                ])
+                scale([h,w,thickness])
                 cube(1);
             }
         }
@@ -187,13 +206,13 @@ union() {
                 cylinder(3*thickness, stylusRadius, stylusRadius);
         
             // slot to align template
-            translate([
-                (dot2dotV+lineExtra)/2,
-                cell2cell*(cols+2)-stylusDiameter,
-                -thickness
-            ])
-            scale([line2line*(rows), stylusDiameter*lockwidth, 3*thickness])
+            translate([a,b,-thickness])
+            scale([sx, sy, sz])
                 cube(1);
+            translate([a,b,0])
+                rotate([40,0,0])
+                    scale([sx,sy,sz])
+                        cube(1);
         
             // This offset is so that double-sided notes dont collide
             translate([dot2dotV/2,-dot2dotH/2,0])        
