@@ -35,7 +35,7 @@ punchSmaller=0.8;
 // A value of 1.0 is a perfectly round dome.
 // A perfectly round dome leaves rather large holes with paper rips
 // A value of 0.75 gives a slightly flat ellipsoid pit
-dome=0.5;
+dome=0.65;
 
 // parameters of slate in rows and columns
 cols=28;
@@ -110,11 +110,11 @@ union() {
         }
         union() {
             translate([atx-sx/4,aty+2,atz])
-                rotate([20,0,0])
+                rotate([5,0,0])
                     scale([sx*2, sy, 2*sz])
                         cube(1);
             translate([atx+sx,aty-w/2,atz+thickness])
-                rotate([0,-20,0])
+                rotate([0,-5,0])
                 scale([w,w,w])
                     cube(1);
             
