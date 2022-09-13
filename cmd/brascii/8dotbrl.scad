@@ -52,6 +52,7 @@ rows=6;
 // to slip under paper if it's too thick, or too floppy from being too thin
 thickness = 1.5;
 pinheight=0.85;
+pinDiameter=2;
 
 //// rendering detail
 // 15 degree features
@@ -83,14 +84,14 @@ translate([2,-cell2cell*cols/2,0])
 union() {
     // These cones must line up when template is moved
     // Make them as short as possible to prevent breakage
-    translate([stylusDiameter,cell2cell*(-1),thickness])
-        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
-    translate([stylusDiameter,cell2cell*(cols+1),thickness])
-        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
-    translate([line2line*rows+lineExtra,cell2cell*(-1),thickness])
-        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
-    translate([line2line*rows+lineExtra,cell2cell*(cols+1),thickness])
-        cylinder(stylusDiameter*pinheight, stylusRadius, 0);
+    translate([marginLine,cell2cell*(-1),thickness])
+        cylinder(pinDiameter*pinheight, pinDiameter/2, 0);
+    translate([marginLine,cell2cell*(cols+1),thickness])
+        cylinder(pinDiameter*pinheight, pinDiameter/2, 0);
+    translate([line2line*rows+marginLine,cell2cell*(-1),thickness])
+        cylinder(pinDiameter*pinheight, pinDiameter/2, 0);
+    translate([line2line*rows+marginLine,cell2cell*(cols+1),thickness])
+        cylinder(pinDiameter*pinheight, pinDiameter/2, 0);
     
     // Make the barrier that paper is placed against a trapezoid,
     // so that it does not get stuck on the template,
@@ -125,13 +126,14 @@ union() {
     difference() {        
         translate([0,-2*cell2cell,0])
         scale([
-          line2line*(rows)+dot2dotV+lineExtra,
+          line2line*rows+dot2dotV+lineExtra+dot2dotV,
           cell2cell*(cols+4),
           thickness
         ])
         cube(1);
+        
         // This is so that double-sided notes don't collide
-        translate([dot2dotV/2, -dot2dotH/2,0])
+        translate([dot2dotV - dot2dotV/4, 0 -dot2dotV/4,0])
         for(c=[0:cols-1]) {
             for(r=[0:rows-1]) {
                 for(cd=[0:1]) {
@@ -156,7 +158,7 @@ union() {
 translate([-4-line2line*rows-lineExtra,-cell2cell*cols/2,0])
 union() {
     w = cell2cell*(cols+4);
-    h = line2line*rows+dot2dotV+lineExtra;
+    h = line2line*rows+dot2dotV+lineExtra+dot2dotV;
     translate([
         (stylusDiameter+line2line*rows+lineExtra)/2,
         cell2cell*(cols+1),
@@ -166,14 +168,14 @@ union() {
     
     for(c = [0:cols-1]) {
         if(c%5==4) {
-            a = stylusRadius/2;
+            a = pinDiameter/2;
             b = cell2cell*(cols-1-c)+dot2dotV/2;
-            translate([a,b,thickness])
-            sphere(stylusRadius/2);
-            a2 = h-stylusRadius/2;
+            translate([a,b+dot2dotH/2,thickness])
+            sphere(pinDiameter/2);
+            a2 = h-stylusRadius;
             b2 = cell2cell*cols-b-dot2dotH;
-            translate([a2,b2,thickness])
-            sphere(stylusRadius/2);
+            translate([a2-dot2dotH/2,b2,thickness])
+            sphere(pinDiameter/2);
         }    
     }
 
@@ -196,14 +198,14 @@ union() {
         // drilled out items
         union() {
             // positioning pins
-            translate([stylusDiameter,cell2cell*(-1),-thickness])
-                cylinder(3*thickness, stylusRadius, stylusRadius);
-            translate([stylusDiameter,cell2cell*(cols+1),-thickness])
-                cylinder(3*thickness, stylusRadius, stylusRadius);
-            translate([line2line*rows+lineExtra,cell2cell*(-1),-thickness])
-                cylinder(3*thickness, stylusRadius, stylusRadius);
-            translate([line2line*rows+lineExtra,cell2cell*(cols+1),-thickness])
-                cylinder(3*thickness, stylusRadius, stylusRadius);
+            translate([marginLine,cell2cell*(-1),-thickness])
+                cylinder(3*thickness, pinDiameter/2, pinDiameter/2);
+            translate([marginLine,cell2cell*(cols+1),-thickness])
+                cylinder(3*thickness, pinDiameter/2, pinDiameter/2);
+            translate([line2line*rows+marginLine,cell2cell*(-1),-thickness])
+                cylinder(3*thickness, pinDiameter/2, pinDiameter/2);
+            translate([line2line*rows+marginLine,cell2cell*(cols+1),-thickness])
+                cylinder(3*thickness, pinDiameter/2, pinDiameter/2);
         
             // slot to align template
             translate([a,b,-thickness])
@@ -215,7 +217,7 @@ union() {
                         cube(1);
         
             // This offset is so that double-sided notes dont collide
-            translate([dot2dotV/2,-dot2dotH/2,0])        
+            translate([dot2dotV-dot2dotV/4,0-dot2dotV/4,0])        
             for(c=[0:cols-1]) {
                 for(r=[0:rows-1]) {
                     for(cd=[0:1]) {                    
