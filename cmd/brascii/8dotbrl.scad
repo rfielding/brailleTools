@@ -30,7 +30,7 @@ cell2cell=6.0*(dot2dotH/2.5);
 // if it's too large, then dots will be in wrong places.
 stylusDiameter=2;
 // The actual stylus bumps up against the template, but tip may be smaller;
-punchSmaller=0.8;
+punchSmaller=0.9;
 
 // A value of 1.0 is a perfectly round dome.
 // A perfectly round dome leaves rather large holes with paper rips
@@ -111,11 +111,11 @@ union() {
         }
         union() {
             translate([atx-sx/4,aty+2,atz])
-                rotate([5,0,0])
+                rotate([15,0,0])
                     scale([sx*2, sy, 2*sz])
                         cube(1);
             translate([atx+sx,aty-w/2,atz+thickness])
-                rotate([0,-5,0])
+                rotate([0,-15,0])
                 scale([w,w,w])
                     cube(1);
             
