@@ -21,6 +21,7 @@ dot2dotV=2.3;
 
 // extra spacing between lines (in addition to between dots
 lineExtra=0.4;
+//lineExtra=dot2dotV;  // this is more like what you want for 6-dot
 
 // spacing between cells at same dot
 cell2cell=6.0*(dot2dotH/2.5);
@@ -45,6 +46,10 @@ rows=6;
 // - need to do this so that when you do double-sided, the dots don't
 //   collide when you line up markers on front and back.
 //   that means putting dots at + 0.5*dot2dot on opposite sides
+//
+// The solution may be to remove the edge rising up for aligning to the paper
+// edge so that the template can be put on the backside with same holes,
+// where aligning to edge is done manually.
 
 // The thickness of the slate parts are important in 
 // getting consistent dot placements; especially dot alignment
@@ -103,6 +108,8 @@ union() {
     sy = stylusDiameter*lockwidth;
     sz = stylusDiameter*2;
     w = 10;
+       
+    // Paper edge
     difference() {
         union() {
             translate([atx,aty,atz])
@@ -110,15 +117,15 @@ union() {
                     cube(1);
         }
         union() {
+            
             translate([atx-sx/4,aty+2,atz])
-                rotate([15,0,0])
+                rotate([20,0,0])
                     scale([sx*2, sy, 2*sz])
                         cube(1);
             translate([atx+sx,aty-w/2,atz+thickness])
-                rotate([0,-15,0])
+                rotate([0,-20,0])
                 scale([w,w,w])
-                    cube(1);
-            
+                    cube(1);             
         }
     }
 
@@ -127,24 +134,33 @@ union() {
         translate([0,-2*cell2cell,0])
         scale([
           line2line*rows+dot2dotV+lineExtra+dot2dotV,
-          cell2cell*(cols+4),
+          cell2cell*(cols+4) + 1,
           thickness
         ])
         cube(1);
         
-        // This is so that double-sided notes don't collide
-        translate([dot2dotV - dot2dotV/4, 0 -dot2dotV/4,0])
-        for(c=[0:cols-1]) {
-            for(r=[0:rows-1]) {
-                for(cd=[0:1]) {
-                    for(rd=[0:(dots/2)-1]) {
-                        translate([
-                            marginLine + r*line2line + rd*dot2dotV,
-                            marginCell + c*cell2cell + cd*dot2dotH,
-                            thickness
-                        ])
-                        scale([1,1,dome])
-                        sphere(stylusRadius*punchSmaller);
+        union() {
+                   
+            // Allow the top to be tilted up     
+            translate([-atx*0.5,aty+sy,thickness])
+                rotate([-15,0,0])
+                    scale([sx*2,sy*2,thickness])
+                        cube(1);
+            
+            // This is so that double-sided notes don't collide
+            translate([dot2dotV - dot2dotV/4, 0 -dot2dotV/4,0])
+            for(c=[0:cols-1]) {
+                for(r=[0:rows-1]) {
+                    for(cd=[0:1]) {
+                        for(rd=[0:(dots/2)-1]) {
+                            translate([
+                                marginLine + r*line2line + rd*dot2dotV,
+                                marginCell + c*cell2cell + cd*dot2dotH,
+                                thickness
+                            ])
+                            scale([1,1,dome])
+                            sphere(stylusRadius*punchSmaller);
+                        }
                     }
                 }
             }
@@ -157,6 +173,7 @@ union() {
 // because the surface contacting is on top
 translate([-4-line2line*rows-lineExtra,-cell2cell*cols/2,0])
 union() {
+    // Just a dot to signify facing up
     w = cell2cell*(cols+4);
     h = line2line*rows+dot2dotV+lineExtra+dot2dotV;
     translate([
@@ -166,6 +183,7 @@ union() {
     ])
     cylinder(stylusDiameter*pinheight, stylusRadius*2, stylusRadius*2);
     
+    // every 5 cells, put a dot for top and bottom
     for(c = [0:cols-1]) {
         if(c%5==4) {
             a = pinDiameter/2;
@@ -174,7 +192,7 @@ union() {
             sphere(pinDiameter/2);
             a2 = h-stylusRadius;
             b2 = cell2cell*cols-b-dot2dotH;
-            translate([a2-dot2dotH/2,b2,thickness])
+            translate([a2-dot2dotH/2-lineExtra,b2,thickness])
             sphere(pinDiameter/2);
         }    
     }
@@ -191,7 +209,7 @@ union() {
         union() {
             translate([0,-2*cell2cell,0])
             union() {
-                scale([h,w,thickness])
+                scale([h,w+1,thickness])
                 cube(1);
             }
         }
@@ -216,7 +234,7 @@ union() {
                     scale([sx,sy,sz])
                         cube(1);
         
-            // This offset is so that double-sided notes dont collide
+            // This offset is so that double-sided dots dont collide
             translate([dot2dotV-dot2dotV/4,0-dot2dotV/4,0])        
             for(c=[0:cols-1]) {
                 for(r=[0:rows-1]) {
