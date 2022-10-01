@@ -19,19 +19,19 @@ dots=8;
 dot2dotH=2.3;
 dot2dotV=2.3;
 
-// extra spacing between lines (in addition to between dots
-lineExtra=0.4;
-//lineExtra=dot2dotV;  // this is more like what you want for 6-dot
-
 // spacing between cells at same dot
-cell2cell=6.0*(dot2dotH/2.5);
+cell2cell = 6.0*(dot2dotH/2.5);
+
+// extra spacing between lines (in addition to between dots
+lineExtra=(cell2cell-2*dot2dotH)*(dot2dotV/dot2dotH);
+//lineExtra=dot2dotV;  // this is more like what you want for 6-dot
 
 // the diameter of the stylus
 // this is very important to get proper domes
 // if it's too large, then dots will be in wrong places.
 stylusDiameter=2;
 // The actual stylus bumps up against the template, but tip may be smaller;
-punchSmaller=0.9;
+punchSmaller=0.95;
 
 // A value of 1.0 is a perfectly round dome.
 // A perfectly round dome leaves rather large holes with paper rips
@@ -40,7 +40,7 @@ dome=0.65;
 
 // parameters of slate in rows and columns
 cols=28;
-rows=6;
+rows=4;
 
 //// bugs:
 // - need to do this so that when you do double-sided, the dots don't
@@ -55,7 +55,7 @@ rows=6;
 // getting consistent dot placements; especially dot alignment
 // printing speed is affected by thickness, and it's less comfortable
 // to slip under paper if it's too thick, or too floppy from being too thin
-thickness = 1.5;
+thickness = 1.75;
 pinheight=0.85;
 pinDiameter=2;
 
@@ -112,20 +112,24 @@ union() {
     // Paper edge
     difference() {
         union() {
-            translate([atx,aty,atz])
-                scale([sx, sy, sz])
+            translate([atx,aty,atz+thickness])
+                rotate([-5,0,0])
+                scale([sx, sy, sz-thickness])
                     cube(1);
         }
         union() {
-            
-            translate([atx-sx/4,aty+2,atz])
-                rotate([20,0,0])
+            translate([atx-sx/4,aty+1.5,atz])
+                rotate([5,0,0])
                     scale([sx*2, sy, 2*sz])
                         cube(1);
             translate([atx+sx,aty-w/2,atz+thickness])
-                rotate([0,-20,0])
+                rotate([0,-5,0])
                 scale([w,w,w])
                     cube(1);             
+            rotate([0,5,0]) translate([atx,(aty-w/2),w+atz+thickness])
+                rotate([0,180,0])
+                scale([w,w,w])
+                    cube(1);                     
         }
     }
 
@@ -182,17 +186,25 @@ union() {
         thickness
     ])
     cylinder(stylusDiameter*pinheight, stylusRadius*2, stylusRadius*2);
+
+    for(r = [0:(rows-2)]) {
+        translate([
+            (dot2dotV-dot2dotV/4)-lineExtra/2+(r+1)*line2line,
+            0,
+            thickness
+        ]) scale([lineExtra, cols*cell2cell, stylusRadius]) cube(1);
+    }
     
     // every 5 cells, put a dot for top and bottom
     for(c = [0:cols-1]) {
         if(c%5==4) {
             a = pinDiameter/2;
             b = cell2cell*(cols-1-c)+dot2dotV/2;
-            translate([a,b+dot2dotH/2,thickness])
+            translate([a,b+dot2dotH/2,thickness-pinDiameter*0.2])
             sphere(pinDiameter/2);
             a2 = h-stylusRadius;
             b2 = cell2cell*cols-b-dot2dotH;
-            translate([a2-dot2dotH/2-lineExtra,b2,thickness])
+            translate([a2-dot2dotH/2-lineExtra,b2,thickness-pinDiameter*0.2])
             sphere(pinDiameter/2);
         }    
     }
@@ -204,13 +216,13 @@ union() {
     sz = 3*thickness;
     
        
+    
     difference() {
         // main backing board
         union() {
             translate([0,-2*cell2cell,0])
             union() {
-                scale([h,w+1,thickness])
-                cube(1);
+                scale([h,w+1,thickness]) cube(1);                
             }
         }
         // drilled out items
