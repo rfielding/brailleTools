@@ -10,11 +10,22 @@ from keybow2040 import Keybow2040
 #
 # 8-dot braille (using 7-dots literally) for middle two rows. As seen from the BACK:
 # 
-# [x    ][d1][d4][x   ]
+# [x    ][d1][d4][tab ]
 # [x    ][d2][d5][x   ]
-# [x    ][d3][d6][alt ]
+# [gui  ][d3][d6][alt ]
 # [shift][d7][d8][ctrl]
 #
+# Note: gui is the "windows" key
+# It's important to push down keys in order.
+# the d keys must all come up after other keys
+# the tab key sends control on down, so modifiers
+# must go down first, etc.
+
+# ex: to navigate shift+tab to tab backwards
+# gui+tab to move between apps
+# ctrl+tab to move between app tabs
+# ctrl+c to send ctrl c.
+
 # For all middle d fingers, no key is emitted until
 # all fingers come up.
 # When all fingers come up in d rows, the shift,alt,ctrl
@@ -162,6 +173,18 @@ def handle_down(key):
             isAlt = True
         if key.number == 2:
             isGUI = True
+        if key.number == 12:
+            keys = [Keycode.TAB]
+            if isShift:
+                keys.append(Keycode.SHIFT)
+            if isCtrl:
+                keys.append(Keycode.CONTROL)
+            if isAlt:
+                keys.append(Keycode.ALT)
+            if isGUI:
+                key.set_led(*red)
+                keys.append(Keycode.GUI)
+            keyboard.send(*keys)
 
 def totalUsed():
     global keyToUsed
