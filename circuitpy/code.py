@@ -1,12 +1,5 @@
-# SPDX-FileCopyrightText: 2021 Sandy Macdonald
-#
-# SPDX-License-Identifier: MIT
-
-# A simple example of how to set up a keymap and HID keyboard on Keybow 2040.
-
 # You'll need to connect Keybow 2040 to a computer, as you would with a regular
 # USB keyboard.
-
 # Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
 
 # NOTE! Requires the adafruit_hid CircuitPython library also!
@@ -22,6 +15,9 @@ from adafruit_hid.keycode import Keycode
 i2c = board.I2C()
 keybow = Keybow2040(i2c)
 keys = keybow.keys
+
+isAlt = False
+isCtrl = False
 
 # Set up the keyboard and layout
 keyboard = Keyboard(usb_hid.devices)
@@ -75,7 +71,7 @@ charToKeycodeMap = [
 	[Keycode.TWO,Keycode.SHIFT],[Keycode.A,Keycode.SHIFT],[Keycode.B,Keycode.SHIFT],[Keycode.C,Keycode.SHIFT],[Keycode.D,Keycode.SHIFT],[Keycode.E,Keycode.SHIFT],[Keycode.F,Keycode.SHIFT],[Keycode.G,Keycode.SHIFT], [Keycode.H,Keycode.SHIFT],[Keycode.I,Keycode.SHIFT],[Keycode.J,Keycode.SHIFT],[Keycode.K,Keycode.SHIFT],[Keycode.L,Keycode.SHIFT],[Keycode.M,Keycode.SHIFT],[Keycode.N,Keycode.SHIFT],[Keycode.O,Keycode.SHIFT],
 	[Keycode.P,Keycode.SHIFT],[Keycode.Q,Keycode.SHIFT],[Keycode.R,Keycode.SHIFT],[Keycode.S,Keycode.SHIFT],[Keycode.T,Keycode.SHIFT],[Keycode.U,Keycode.SHIFT],[Keycode.V,Keycode.SHIFT],[Keycode.W,Keycode.SHIFT],[Keycode.X,Keycode.SHIFT],[Keycode.Y,Keycode.SHIFT],[Keycode.Z,Keycode.SHIFT],[Keycode.LEFT_BRACKET],[Keycode.BACKSLASH],[Keycode.RIGHT_BRACKET],[Keycode.SIX,Keycode.SHIFT],[Keycode.MINUS,Keycode.SHIFT],
 	[Keycode.GRAVE_ACCENT],[Keycode.A],[Keycode.B],[Keycode.C],[Keycode.D],[Keycode.E],[Keycode.F],[Keycode.G], [Keycode.H],[Keycode.I],[Keycode.J],[Keycode.K],[Keycode.L],[Keycode.M],[Keycode.N],[Keycode.O],
-	[Keycode.P],[Keycode.Q],[Keycode.R],[Keycode.S],[Keycode.T],[Keycode.U],[Keycode.V],[Keycode.W], [Keycode.X],[Keycode.Y],[Keycode.Z],[Keycode.LEFT_BRACKET,Keycode.SHIFT],[Keycode.BACKSLASH,Keycode.SHIFT],[Keycode.RIGHT_BRACKET,Keycode.SHIFT],[Keycode.GRAVE_ACCENT,Keycode.SHIFT],[Keycode.DELETE],
+	[Keycode.P],[Keycode.Q],[Keycode.R],[Keycode.S],[Keycode.T],[Keycode.U],[Keycode.V],[Keycode.W], [Keycode.X],[Keycode.Y],[Keycode.Z],[Keycode.LEFT_BRACKET,Keycode.SHIFT],[Keycode.BACKSLASH,Keycode.SHIFT],[Keycode.RIGHT_BRACKET,Keycode.SHIFT],[Keycode.GRAVE_ACCENT,Keycode.SHIFT],[Keycode.DELETE]
 ]
 # 8 dot braille is used
 dots = 8
@@ -105,6 +101,9 @@ def charToKeycode(c):
 
 
 def handle_down(key):
+    global isAlt
+    global isCtrl
+    global keyToHeld
     n = key.number
     if isBrailleKey(n):
         key.set_led(*green)
@@ -112,12 +111,15 @@ def handle_down(key):
         keyToUsed[n] = True
     else:
         key.set_led(*yellow)
-        if key.number == 1:
-          print(" ",end='')
-        if key.number == 13:
-          print("\n",end='')
+        if key.number == 15:
+          isCtrl = True
+          print("ctrl")
+        if key.number == 14:
+          isAlt = True
+          print("alt")
 
 def totalUsed():
+    global keyToUsed
     t = 0
     for i in range(0,16):
         if keyToUsed[i]:
@@ -125,14 +127,18 @@ def totalUsed():
     return t
 
 def clearDotLEDs():
+    global keys
     for i in range(0,16):
         keys[i].set_led(*black)
 
 def clearDotHeld():
+    global keyToHeld
     for i in range(0,16):
         keyToHeld[i] = False
 
 def handle_up(key):
+    global isAlt
+    global isCtrl
     n = key.number
     if isBrailleKey(n):
         keyToUsed[n] = False
@@ -140,17 +146,22 @@ def handle_up(key):
         if t == 0:
             o = dots2ord()
             c = brailleAsciiMap[o%128]
-            # for the lower 128, print literally
-            print("%d %d \"%c\"" % (o,c,chr(c)),end='')
-            print("%c " % (chr(c)),end='')
-            #print("%d " % charToKeycodeMap[c%128])
-            keyboard.send(*charToKeycodeMap[c%128])
+            theKeys = charToKeycodeMap[c%128].copy()
+            if isAlt:
+                theKeys.append(Keycode.ALT)
+            if isCtrl:
+                theKeys.append(Keycode.CONTROL)
+            keyboard.send(*theKeys)
             clearDotLEDs()
             clearDotHeld()
         else:
             pass
     else:
         key.set_led(*black)
+        if key.number == 15:
+            isCtrl = False
+        if key.number == 14:
+            isAlt = False
 
 for key in keys:
     @keybow.on_press(key)
@@ -161,6 +172,9 @@ for key in keys:
         handle_up(key)
 
 def mapDot(d,n):
+    global keyToDot
+    global dot2Key
+    global keyToUsed
     keyToDot[n] = d
     keyToHeld[n] = False
     keyToUsed[n] = False
