@@ -6,6 +6,45 @@
 import board
 from keybow2040 import Keybow2040
 
+# Layout: (with usb-c pointing down, thumbs on back, fingers on front):
+#
+# 8-dot braille (using 7-dots literally) for middle two rows. As seen from the BACK:
+# 
+# [x    ][d1][d4][x   ]
+# [x    ][d2][d5][x   ]
+# [x    ][d3][d6][alt ]
+# [shift][d7][d8][ctrl]
+#
+# For all middle d fingers, no key is emitted until
+# all fingers come up.
+# When all fingers come up in d rows, the shift,alt,ctrl
+# are checked at the time all d fingers come up.
+# ie: 'A' is either: d1+d7, or it's d1+shift
+#
+# Everything above 7-bit ASCII is unreachable directly,
+# because keycodes don't consistently map them anyway.
+#
+# space: d8
+# backspace: d7
+# enter: d7+d8
+#
+# Arrows mimic the vi text editor:
+#
+# left: h+d8 (ie: d1+d2+d5+d8)
+# right: l+d8 (ie: d1+d2+d3+d8)
+# down: j+d8 (ie: d2+d4+d5+d8)
+# up: k+d8 (ie: d1+d3+d8)
+#
+# There is a principled way to take the basic 6-dot ASCII braille standard,
+# and interpret it as 8dot computer braille. Here is the full map, which
+# includes theoretical, but unused, dot patterns as well:
+#
+#   https://github.com/rfielding/teeny/tree/master/cmd/brascii 
+#
+# Importantly, It shows you how to make raw chars like TAB and ESC, so
+# that you can use text editors like vi.
+
+
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
@@ -18,6 +57,8 @@ keys = keybow.keys
 
 isAlt = False
 isCtrl = False
+isShift = False
+isGUI = False
 
 # Set up the keyboard and layout
 keyboard = Keyboard(usb_hid.devices)
@@ -103,6 +144,8 @@ def charToKeycode(c):
 def handle_down(key):
     global isAlt
     global isCtrl
+    global isShift
+    global isGUI
     global keyToHeld
     n = key.number
     if isBrailleKey(n):
@@ -112,11 +155,13 @@ def handle_down(key):
     else:
         key.set_led(*yellow)
         if key.number == 15:
-          isCtrl = True
-          print("ctrl")
+            isCtrl = True
         if key.number == 14:
-          isAlt = True
-          print("alt")
+            isAlt = True
+        if key.number == 3:
+            isShift = True
+        if key.number == 2:
+            isGUI = True
 
 def totalUsed():
     global keyToUsed
@@ -139,6 +184,8 @@ def clearDotHeld():
 def handle_up(key):
     global isAlt
     global isCtrl
+    global isShift
+    global isGUI
     n = key.number
     if isBrailleKey(n):
         keyToUsed[n] = False
@@ -147,17 +194,22 @@ def handle_up(key):
             o = dots2ord()
             c = brailleAsciiMap[o%128]
             theKeys = charToKeycodeMap[c%128].copy()
+            if isShift and not(Keycode.SHIFT in theKeys):
+                theKeys.append(Keycode.SHIFT)
             if isAlt:
                 theKeys.append(Keycode.ALT)
             if isCtrl:
                 theKeys.append(Keycode.CONTROL)
+            if isGUI:
+                theKeys.append(Keycode.GUI)
+
             if o == 64:
                 theKeys[0] = Keycode.BACKSPACE
             if o == 128:
                 theKeys[0] = Keycode.SPACE
             elif o == 128+64:
                 theKeys[0] = Keycode.ENTER
-            elif c > 128:
+            elif o > 128:
                 # vi style arrows with dot 8
                 if c == ord('h'):
                     theKeys[0] = Keycode.LEFT_ARROW
@@ -178,6 +230,10 @@ def handle_up(key):
             isCtrl = False
         if key.number == 14:
             isAlt = False
+        if key.number == 3:
+            isShift = False
+        if key.number == 2:
+            isGUI = False
 
 for key in keys:
     @keybow.on_press(key)
