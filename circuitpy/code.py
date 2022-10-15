@@ -151,6 +151,22 @@ def handle_up(key):
                 theKeys.append(Keycode.ALT)
             if isCtrl:
                 theKeys.append(Keycode.CONTROL)
+            if o == 64:
+                theKeys[0] = Keycode.BACKSPACE
+            if o == 128:
+                theKeys[0] = Keycode.SPACE
+            elif o == 128+64:
+                theKeys[0] = Keycode.ENTER
+            elif c > 128:
+                # vi style arrows with dot 8
+                if c == ord('h'):
+                    theKeys[0] = Keycode.LEFT_ARROW
+                if c == ord('l'):
+                    theKeys[0] = Keycode.RIGHT_ARROW
+                if c == ord('j'):
+                    theKeys[0] = Keycode.DOWN_ARROW
+                if c == ord('k'):
+                    theKeys[0] = Keycode.UP_ARROW
             keyboard.send(*theKeys)
             clearDotLEDs()
             clearDotHeld()
