@@ -60,23 +60,22 @@ for i in range(0,128): # upper unused half
 brailleAsciiMap = [0 for i in range(0,256)]
 for i in range(0,256):
     brailleAsciiMap[braillePermutation[i]] = i
+# for some reason, the stack runs out of space if i dont wipe this
 braillePermutation = []
 
 # these are still not right
-kcOpenSquare=160
-kcCloseSquare=171
 kcEnter=13
 
 # Map the 0-127 ascii chars of 7-dot braille to keys to send
 charToKeycodeMap = [
-	[0],[0],[0],[0],[0],[0],[0],[0], [Keycode.BACKSPACE],[Keycode.TAB],[kcEnter],[0],[0],[kcEnter],[0],[0],
+	[0],[0],[0],[0],[0],[0],[0],[0], [Keycode.BACKSPACE],[Keycode.TAB],[Keycode.ENTER],[0],[0],[Keycode.ENTER],[0],[0],
 	[Keycode.DELETE],[0],[0],[0],[0],[0],[0],[0], [0],[0],[0],[Keycode.ESCAPE],[0],[0],[0],[0],
 	[Keycode.SPACE],[Keycode.ONE,Keycode.SHIFT],[Keycode.QUOTE,Keycode.SHIFT],[Keycode.THREE,Keycode.SHIFT],[Keycode.FOUR,Keycode.SHIFT],[Keycode.FIVE,Keycode.SHIFT],[Keycode.SEVEN,Keycode.SHIFT],[Keycode.QUOTE], [Keycode.NINE,Keycode.SHIFT],[Keycode.ZERO, Keycode.SHIFT],[Keycode.EIGHT,Keycode.SHIFT],[Keycode.EQUALS,Keycode.SHIFT],[Keycode.COMMA],[Keycode.MINUS],[Keycode.PERIOD],[Keycode.FORWARD_SLASH],
 	[Keycode.ZERO],[Keycode.ONE],[Keycode.TWO],[Keycode.THREE],[Keycode.FOUR],[Keycode.FIVE],[Keycode.SIX],[Keycode.SEVEN],[Keycode.EIGHT],[Keycode.NINE],[Keycode.SEMICOLON,Keycode.SHIFT],[Keycode.SEMICOLON],[Keycode.COMMA,Keycode.SHIFT],[Keycode.EQUALS],[Keycode.PERIOD,Keycode.SHIFT],[Keycode.FORWARD_SLASH,Keycode.SHIFT],
 	[Keycode.TWO,Keycode.SHIFT],[Keycode.A,Keycode.SHIFT],[Keycode.B,Keycode.SHIFT],[Keycode.C,Keycode.SHIFT],[Keycode.D,Keycode.SHIFT],[Keycode.E,Keycode.SHIFT],[Keycode.F,Keycode.SHIFT],[Keycode.G,Keycode.SHIFT], [Keycode.H,Keycode.SHIFT],[Keycode.I,Keycode.SHIFT],[Keycode.J,Keycode.SHIFT],[Keycode.K,Keycode.SHIFT],[Keycode.L,Keycode.SHIFT],[Keycode.M,Keycode.SHIFT],[Keycode.N,Keycode.SHIFT],[Keycode.O,Keycode.SHIFT],
-	[Keycode.P,Keycode.SHIFT],[Keycode.Q,Keycode.SHIFT],[Keycode.R,Keycode.SHIFT],[Keycode.S,Keycode.SHIFT],[Keycode.T,Keycode.SHIFT],[Keycode.U,Keycode.SHIFT],[Keycode.V,Keycode.SHIFT],[Keycode.W,Keycode.SHIFT],[Keycode.X,Keycode.SHIFT],[Keycode.Y,Keycode.SHIFT],[Keycode.Z,Keycode.SHIFT],[kcOpenSquare],[Keycode.BACKSLASH],[kcCloseSquare],[Keycode.SIX,Keycode.SHIFT],[Keycode.MINUS,Keycode.SHIFT],
+	[Keycode.P,Keycode.SHIFT],[Keycode.Q,Keycode.SHIFT],[Keycode.R,Keycode.SHIFT],[Keycode.S,Keycode.SHIFT],[Keycode.T,Keycode.SHIFT],[Keycode.U,Keycode.SHIFT],[Keycode.V,Keycode.SHIFT],[Keycode.W,Keycode.SHIFT],[Keycode.X,Keycode.SHIFT],[Keycode.Y,Keycode.SHIFT],[Keycode.Z,Keycode.SHIFT],[Keycode.LEFT_BRACKET],[Keycode.BACKSLASH],[Keycode.RIGHT_BRACKET],[Keycode.SIX,Keycode.SHIFT],[Keycode.MINUS,Keycode.SHIFT],
 	[Keycode.GRAVE_ACCENT],[Keycode.A],[Keycode.B],[Keycode.C],[Keycode.D],[Keycode.E],[Keycode.F],[Keycode.G], [Keycode.H],[Keycode.I],[Keycode.J],[Keycode.K],[Keycode.L],[Keycode.M],[Keycode.N],[Keycode.O],
-	[Keycode.P],[Keycode.Q],[Keycode.R],[Keycode.S],[Keycode.T],[Keycode.U],[Keycode.V],[Keycode.W], [Keycode.X],[Keycode.Y],[Keycode.Z],[kcOpenSquare,Keycode.SHIFT],[Keycode.BACKSLASH,Keycode.SHIFT],[kcCloseSquare,Keycode.SHIFT],[Keycode.GRAVE_ACCENT,Keycode.SHIFT],[Keycode.DELETE],
+	[Keycode.P],[Keycode.Q],[Keycode.R],[Keycode.S],[Keycode.T],[Keycode.U],[Keycode.V],[Keycode.W], [Keycode.X],[Keycode.Y],[Keycode.Z],[Keycode.LEFT_BRACKET,Keycode.SHIFT],[Keycode.BACKSLASH,Keycode.SHIFT],[Keycode.RIGHT_BRACKET,Keycode.SHIFT],[Keycode.GRAVE_ACCENT,Keycode.SHIFT],[Keycode.DELETE],
 ]
 # 8 dot braille is used
 dots = 8
