@@ -154,32 +154,34 @@ def handle_down(key):
         keyToUsed[n] = True
     else:
         key.set_led(*yellow)
+        if key.number == 3:
+            isShift = True
         if key.number == 15:
             isCtrl = True
         if key.number == 14:
             isAlt = True
-        if key.number == 3:
-            isShift = True
         if key.number == 2:
             isGUI = True
 
 def totalUsed():
     global keyToUsed
     t = 0
-    for i in range(0,16):
-        if keyToUsed[i]:
+    for n in range(0,16):
+        if keyToUsed[n]:
             t += 1
     return t
 
 def clearDotLEDs():
     global keys
-    for i in range(0,16):
-        keys[i].set_led(*black)
+    for n in range(0,16):
+        if isBrailleKey(n):
+            keys[n].set_led(*black)
 
 def clearDotHeld():
     global keyToHeld
-    for i in range(0,16):
-        keyToHeld[i] = False
+    for n in range(0,16):
+        if isBrailleKey(n):
+            keyToHeld[n] = False
 
 def handle_up(key):
     global isAlt
