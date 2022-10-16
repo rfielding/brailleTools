@@ -174,6 +174,7 @@ def handle_down(key):
         if key.number == 2:
             isGUI = True
         if key.number == 12:
+            key.set_led(*red)
             keys = [Keycode.TAB]
             if isShift:
                 keys.append(Keycode.SHIFT)
@@ -182,7 +183,6 @@ def handle_down(key):
             if isAlt:
                 keys.append(Keycode.ALT)
             if isGUI:
-                key.set_led(*red)
                 keys.append(Keycode.GUI)
             keyboard.send(*keys)
 
