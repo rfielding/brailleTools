@@ -161,6 +161,15 @@ def dots2ord():
 def charToKeycode(c):
     return charToKeycodeMap[c % 256]
 
+def press(keys):
+    keyboard.press(*keys)
+
+def release(keys):
+    keyboard.release(*keys)
+
+def send(keys):
+    press(keys)
+    release(keys)
 
 def handle_down(key):
     global isAlt
@@ -177,24 +186,20 @@ def handle_down(key):
         key.set_led(*yellow)
         if key.number == 3:
             isShift = True
+            keyboard.press(Keycode.SHIFT)
         if key.number == 15:
             isCtrl = True
+            keyboard.press(Keycode.CONTROL)
         if key.number == 14:
             isAlt = True
+            keyboard.press(Keycode.ALT)
         if key.number == 2:
             isGUI = True
+            keyboard.press(Keycode.GUI)
         if key.number == 12:
             key.set_led(*red)
             keys = [Keycode.TAB]
-            if isShift:
-                keys.append(Keycode.SHIFT)
-            if isCtrl:
-                keys.append(Keycode.CONTROL)
-            if isAlt:
-                keys.append(Keycode.ALT)
-            if isGUI:
-                keys.append(Keycode.GUI)
-            keyboard.send(*keys)
+            send(keys)
 
 def totalUsed():
     global keyToUsed
@@ -229,14 +234,6 @@ def handle_up(key):
             o = dots2ord()
             c = brailleAsciiMap[o%128]
             theKeys = charToKeycodeMap[c%128].copy()
-            if isShift and not(Keycode.SHIFT in theKeys):
-                theKeys.append(Keycode.SHIFT)
-            if isAlt:
-                theKeys.append(Keycode.ALT)
-            if isCtrl:
-                theKeys.append(Keycode.CONTROL)
-            if isGUI:
-                theKeys.append(Keycode.GUI)
 
             if o == 64:
                 theKeys[0] = Keycode.BACKSPACE
@@ -254,7 +251,7 @@ def handle_up(key):
                     theKeys[0] = Keycode.DOWN_ARROW
                 if c == ord('k'):
                     theKeys[0] = Keycode.UP_ARROW
-            keyboard.send(*theKeys)
+            send(theKeys)
             clearDotLEDs()
             clearDotHeld()
         else:
@@ -263,12 +260,16 @@ def handle_up(key):
         key.set_led(*black)
         if key.number == 15:
             isCtrl = False
+            keyboard.release(Keycode.CONTROL)
         if key.number == 14:
             isAlt = False
+            keyboard.release(Keycode.ALT)
         if key.number == 3:
             isShift = False
+            keyboard.release(Keycode.SHIFT)
         if key.number == 2:
             isGUI = False
+            keyboard.release(Keycode.GUI)
 
 for key in keys:
     @keybow.on_press(key)
