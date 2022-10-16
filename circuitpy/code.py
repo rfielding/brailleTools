@@ -54,7 +54,12 @@ from keybow2040 import Keybow2040
 #
 # Importantly, It shows you how to make raw chars like TAB and ESC, so
 # that you can use text editors like vi.
-
+#
+# To get good at this keyboard, practice computer braille.
+# Start off typing on qwerty, then mimic it in braille on
+# the keybow2040 loaded with this program
+#
+# https://rfielding.github.io/editor.html
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
