@@ -10,10 +10,10 @@ from keybow2040 import Keybow2040
 #
 # 8-dot braille (using 7-dots literally) for middle two rows. As seen from the BACK:
 # 
-# [x    ][d1][d4][tab ]
-# [x    ][d2][d5][x   ]
-# [gui  ][d3][d6][alt ]
-# [shift][d7][d8][ctrl]
+# [x     ][d1][d4][tab ]
+# [repeat][d2][d5][x   ]
+# [gui   ][d3][d6][alt ]
+# [shift ][d7][d8][ctrl]
 #
 # Note: gui is the "windows" key
 # It's important to push down keys in order.
@@ -80,6 +80,8 @@ isAlt = False
 isCtrl = False
 isShift = False
 isGUI = False
+isRepeat = False
+keyRepeated = None
 
 # Set up the keyboard and layout
 keyboard = Keyboard(usb_hid.devices)
@@ -89,6 +91,7 @@ red = (255,0,0)
 yellow = (255, 255, 0)
 green = (0, 255, 0)
 darkGreen = (0, 64, 0)
+purple = (255,0,255)
 black = (0,0,0)
 
 
@@ -167,16 +170,14 @@ def press(keys):
 def release(keys):
     keyboard.release(*keys)
 
-def send(keys):
-    press(keys)
-    release(keys)
-
 def handle_down(key):
     global isAlt
     global isCtrl
     global isShift
     global isGUI
     global keyToHeld
+    global isRepeat
+    global keyRepeated
     n = key.number
     if isBrailleKey(n):
         key.set_led(*green)
@@ -199,6 +200,11 @@ def handle_down(key):
         if key.number == 12:
             key.set_led(*red)
             keyboard.press(Keycode.TAB)
+        if key.number == 1:
+            key.set_led(*purple)
+            isRepeat = True
+            if keyRepeated:
+                keyboard.press(keyRepeated)
 
 def totalUsed():
     global keyToUsed
@@ -225,6 +231,8 @@ def handle_up(key):
     global isCtrl
     global isShift
     global isGUI
+    global isRepeat
+    global keyRepeated
     n = key.number
     if isBrailleKey(n):
         keyToUsed[n] = False
@@ -250,9 +258,13 @@ def handle_up(key):
                     theKeys[0] = Keycode.DOWN_ARROW
                 if c == ord('k'):
                     theKeys[0] = Keycode.UP_ARROW
-            send(theKeys)
+            press(theKeys)
             clearDotLEDs()
             clearDotHeld()
+            if isRepeat:
+                keyRepeated = theKeys
+            else:
+                release(theKeys)
         else:
             pass
     else:
@@ -271,6 +283,13 @@ def handle_up(key):
             keyboard.release(Keycode.GUI)
         if key.number == 12:
             keyboard.release(Keycode.TAB)
+        if key.number == 1:
+            isRepeat = False
+            if keyRepeated == None:
+                pass
+            else:
+                release(keyRepeated)
+            keyRepeated = None
 
 for key in keys:
     @keybow.on_press(key)
