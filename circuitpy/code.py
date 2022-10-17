@@ -198,8 +198,7 @@ def handle_down(key):
             keyboard.press(Keycode.GUI)
         if key.number == 12:
             key.set_led(*red)
-            keys = [Keycode.TAB]
-            send(keys)
+            keyboard.press(Keycode.TAB)
 
 def totalUsed():
     global keyToUsed
@@ -270,6 +269,8 @@ def handle_up(key):
         if key.number == 2:
             isGUI = False
             keyboard.release(Keycode.GUI)
+        if key.number == 12:
+            keyboard.release(Keycode.TAB)
 
 for key in keys:
     @keybow.on_press(key)
