@@ -18,9 +18,30 @@ btnSize=1.25;
 btnDist=0.4;
 logoCenter=7.4;
 logoRadius=1.5;
-email="danica.fielding77@icloud.com";
+
+///*
+owner="Richard Fielding";
+reward="If Found: 703 789 3318";
+email="windwalkers@gmail.com";
+//*/
+
+/*
+owner="Rob Fielding";
 reward="If Found: 703 944 7005";
+email="rob.fielding@gmail.com";
+*/
+
+
+/*
 owner="Danica Fielding";
+reward="If Found: 703 944 7005";
+email="danica.fielding77@icloud.com";
+*/
+
+if(owner == "Richard Fielding") {
+    reward="If Found: 703 789 3318";
+    email="windwalkers@gmail.com";
+}
 
 
 
@@ -28,24 +49,26 @@ module thePhone() {
 scale([10,10,10])
 difference() {
   union() {
-    translate([0.25-long/2,-wide/2,-0.2]) rotate([90,0,0]) scale([0.045*0.82,0.045,0.045]) linear_extrude(4) text(email, font="monospace");    
+    translate([0.25-long/2,-wide/2,-0.15]) rotate([90,0,0]) scale([0.045*0.82,0.045,0.045]) linear_extrude(4) text(email, font="monospace");    
     translate([8.5-long/2,wide/2,-0.15]) rotate([90,0,180]) scale([0.045,0.045,0.045]) linear_extrude(4) text(reward, font="monospace");
-    translate([long/2,1.5-wide/2,-0.21]) rotate([90,0,90]) scale(0.045) linear_extrude(4) text(owner, font="monospace");
+    translate([long/2,1.5-wide/2-0.7,-0.15]) rotate([90,0,90]) scale(0.045) linear_extrude(4) text(owner, font="monospace");
+    translate([-long/2 + lbuttonsStop - 0.8-0.2,wide/2-0.008,-high-0.19]) scale([0.2,t/2+0.001,high+0.5]) cube(1);
     difference() {      
       translate([long/2-corner+t/2,wide/2-corner+t/2,-high/2]) scale([corner,corner,high+t]) cube(1);
-      translate([long/2-corner+t/2,wide/2-corner+t/2-0.4,-high/2]) rotate([0,0,45]) scale([corner,corner,high]) cube(1);
+      translate([long/2-corner+t/2,wide/2-corner+t/2-0.4,-high/2]) rotate([0,0,45]) scale([corner,corner,high+0.025]) cube(1);
     }
     difference() {
       translate([-(long/2-corner+t/2),wide/2-corner+t/2,-high/2]) scale([-corner,corner,high+t]) cube(1);    
-      translate([-(long/2-corner+t/2)+corner-t/2,wide/2-corner+t/2,-high/2]) rotate([0,0,45]) scale([-corner,corner,high]) cube(1);             
+      translate([-(long/2-corner+t/2)+corner-t/2,wide/2-corner+t/2,-high/2]) rotate([0,0,45]) scale([-corner,corner,high+0.025]) cube(1);             
     }
     difference() {
       translate([(long/2-corner+t/2),-(wide/2-corner+t/2),-high/2]) scale([corner,-corner,high+t]) cube(1);
-      translate([(long/2-corner+t/2)-0.4,-(wide/2-corner+t/2),-high/2]) rotate([0,0,45]) scale([corner,-corner,high]) cube(1);        
+      translate([(long/2-corner+t/2)-0.4,-(wide/2-corner+t/2),-high/2]) rotate([0,0,45]) scale([corner,-corner,high+0.025]) cube(1);        
     }
     difference() {    
       translate([-(long/2-corner+t/2),-(wide/2-corner+t/2),-high/2]) scale([-corner,-corner,high+t]) cube(1);            
-      translate([-(long/2-corner+t/2)+0.4,-(wide/2-corner+t/2),-high/2]) rotate([0,0,-45]) scale([-corner,-corner,high]) cube(1);            
+      // This corner always breaks because supports won't come off completely                                                                                   
+      translate([-(long/2-corner+t/2)+0.4,-(wide/2-corner+t/2),-high/2]) rotate([0,0,-45]) scale([-corner,-corner,high+0.025]) cube(1);            
     }
     difference() {
       union() {
@@ -56,6 +79,7 @@ difference() {
         translate([camLongStart - long/2,-(wide/2-camWideStart),-1]) scale([(camLongStop-camLongStart),(camWideStop-camWideStart),1]) cube(1);
         translate([rbuttonsStart-long/2,-3.6,-4.7])   scale([rbuttonsStop-rbuttonsStart,-5,5]) cube(1);
         translate([lbuttonsStart-long/2,3.6,-4.7])  scale([lbuttonsStop-lbuttonsStart,5,5]) cube(1);
+        // The actual gap for the iPhone!
         scale([long,wide,high]) cube(1,center=true);
         translate([0,0,high/2]) scale([long,wide,high]) cube(1,center=true);
       }
@@ -101,28 +125,28 @@ difference() {
 }
 }
 
-module bottom() {
+
+if(owner == "Rob Fielding") {
     difference() {
-        scale([10,10,10]) translate([0,0,-0.55]) scale([long-2.5*t-0.35,wide-2*t-0.4,0.1]) difference() {
-            linear_extrude(height=2, scale=1.025) square(0.99,center=true);
+        thePhone();
+        translate([-long/2,wide/2-3.5,-6]) linear_extrude(height=2) scale([0.4,0.4,0.1]) import("logo.svg",center=true);
+    }
+}
+
+if(owner == "Richard Fielding") {
+    difference() {
+        thePhone();
+        translate([-long/2,wide/2-4.5,-4.5]) scale(0.35) rotate([0,180,-90]) linear_extrude(3) import("usmc.svg",center=true);
+    }
+}
+
+if(owner == "Danica Fielding") {
+    difference() {
+        thePhone();
+        difference() {
+            translate([-long/2,wide/2-1.5,-4.5]) scale(0.5) rotate([0,180,-90]) linear_extrude(3) import("plants.svg", center=true);
+            translate([30,-35,-10]) scale([40,40,10]) cube(1);
+            translate([-120,-50,-10]) scale([50,150,50]) cube(1);
         }
-        //scale([10,10,10]) translate([0,0,-0.56]) linear_extrude(height=1, scale=1.025) circle(2,$fn=120);
-    }    
+    }
 }
-
-/*
-translate([0,90,0])
-difference() {
-    thePhone();
-    bottom();
-}
-
-translate([0,-10,-high*10-t*7.5])
-rotate([0,180,0])
-intersection() {
-    thePhone();
-    bottom();
-}
-*/
-
-thePhone();
