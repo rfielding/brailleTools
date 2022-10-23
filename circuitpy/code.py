@@ -187,22 +187,28 @@ def handle_down(key):
         key.set_led(*yellow)
         if key.number == 3:
             isShift = True
+            print("shift")
             keyboard.press(Keycode.SHIFT)
         if key.number == 15:
             isCtrl = True
             keyboard.press(Keycode.CONTROL)
+            print("ctrl")
         if key.number == 14:
             isAlt = True
             keyboard.press(Keycode.ALT)
+            print("alt")
         if key.number == 2:
             isGUI = True
             keyboard.press(Keycode.GUI)
+            print("win")
         if key.number == 12:
             key.set_led(*red)
             keyboard.press(Keycode.TAB)
+            print("tab")
         if key.number == 1:
             key.set_led(*purple)
             isRepeat = True
+            print("repeat")
             if keyRepeated:
                 keyboard.press(keyRepeated)
 
@@ -239,25 +245,45 @@ def handle_up(key):
         t = totalUsed()
         if t == 0:
             o = dots2ord()
-            c = brailleAsciiMap[o%128]
-            theKeys = charToKeycodeMap[c%128].copy()
-
+            theKeys = [0]
             if o == 64:
                 theKeys[0] = Keycode.BACKSPACE
-            if o == 128:
+                print("BACKSPACE")
+            elif o == 128:
                 theKeys[0] = Keycode.SPACE
+                print("SPACE")
             elif o == 128+64:
                 theKeys[0] = Keycode.ENTER
-            elif o > 128:
+                print("ENTER")
+            elif o >= 128:
                 # vi style arrows with dot 8
-                if c == ord('h'):
+                if o == 1+2+16+128: # braille h+dot8
                     theKeys[0] = Keycode.LEFT_ARROW
-                if c == ord('l'):
+                    print("LEFT_ARROW")
+                if o == 1+2+4+128:  # braile l+dot8
                     theKeys[0] = Keycode.RIGHT_ARROW
-                if c == ord('j'):
+                    print("RIGHT_ARROW")
+                if o == 2+8+16+128: # braille j+dot8 
                     theKeys[0] = Keycode.DOWN_ARROW
-                if c == ord('k'):
+                    print("DOWN_ARROW")
+                if o == 1+4+128: # braille k+dot8
                     theKeys[0] = Keycode.UP_ARROW
+                    print("UP_ARROW")
+                if o == 1+2+16+64+128: # braille H+dot8
+                    theKeys[0] = Keycode.HOME
+                    print("HOME")
+                if o == 1+2+4+64+128:  # braille L+dot8
+                    theKeys[0] = Keycode.END
+                    print("END")
+                if o == 2+8+16+64+128:  # braille J+dot8
+                    theKeys[0] = Keycode.PAGE_DOWN
+                    print("PAGE_DOWN")
+                if o == 1+4+64+128:   # braille L+dot8 
+                    theKeys[0] = Keycode.PAGE_UP
+                    print("PAGE_UP")
+            else:
+                c = brailleAsciiMap[o%128]
+                theKeys = charToKeycodeMap[c%128].copy()
             press(theKeys)
             clearDotLEDs()
             clearDotHeld()
