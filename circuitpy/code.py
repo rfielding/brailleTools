@@ -10,8 +10,8 @@ from keybow2040 import Keybow2040
 #
 # 8-dot braille (using 7-dots literally) for middle two rows. As seen from the BACK:
 # 
-# [x     ][d1][d4][tab ]
-# [repeat][d2][d5][x   ]
+# [?     ][d1][d4][tab ]
+# [repeat][d2][d5][Fn   ]
 # [gui   ][d3][d6][alt ]
 # [shift ][d7][d8][ctrl]
 #
@@ -46,6 +46,16 @@ from keybow2040 import Keybow2040
 # down: j+d8 (ie: d2+d4+d5+d8)
 # up: k+d8 (ie: d1+d3+d8)
 #
+# home: H+d8 (ie: d1+d2+d5+d8)
+# end: L+d8 (ie: d1+d2+d3+d8)
+# pagedown: J+d8 (ie: d2+d4+d5+d8)
+# pageup: K+d8 (ie: d1+d3+d8)
+#
+# Function keys F1 .. F12
+#
+# F1..F9 Fn+[1..9]
+# F10,F11,F12 Fn+[0,a,b]
+#
 # There is a principled way to take the basic 6-dot ASCII braille standard,
 # and interpret it as 8dot computer braille. Here is the full map, which
 # includes theoretical, but unused, dot patterns as well:
@@ -76,6 +86,7 @@ i2c = board.I2C()
 keybow = Keybow2040(i2c)
 keys = keybow.keys
 
+isFn = False
 isAlt = False
 isCtrl = False
 isShift = False
@@ -87,6 +98,7 @@ keyRepeated = None
 keyboard = Keyboard(usb_hid.devices)
 layout = KeyboardLayoutUS(keyboard)
 
+pink = (255,128,128)
 red = (255,0,0)
 yellow = (255, 255, 0)
 green = (0, 255, 0)
@@ -171,6 +183,7 @@ def release(keys):
     keyboard.release(*keys)
 
 def handle_down(key):
+    global isFn
     global isAlt
     global isCtrl
     global isShift
@@ -185,6 +198,10 @@ def handle_down(key):
         keyToUsed[n] = True
     else:
         key.set_led(*yellow)
+        if key.number == 13:
+            isFn = True
+            print("Fn")
+            key.set_led(*pink)
         if key.number == 3:
             isShift = True
             print("shift")
@@ -233,6 +250,7 @@ def clearDotHeld():
             keyToHeld[n] = False
 
 def handle_up(key):
+    global isFn
     global isAlt
     global isCtrl
     global isShift
@@ -284,6 +302,45 @@ def handle_up(key):
             else:
                 c = brailleAsciiMap[o%128]
                 theKeys = charToKeycodeMap[c%128].copy()
+                if isFn: # Fn isn't a real key on a keyboard. But for Fn key combos
+                    if c == ord('1'):
+                        theKeys = [Keycode.F1]
+                        print("F1")    
+                    if c == ord('2'):
+                        theKeys = [Keycode.F2]    
+                        print("F2")    
+                    if c == ord('3'):
+                        theKeys = [Keycode.F3]    
+                        print("F3")    
+                    if c == ord('4'):
+                        theKeys = [Keycode.F4]    
+                        print("F4")    
+                    if c == ord('5'):
+                        theKeys = [Keycode.F5]    
+                        print("F5")    
+                    if c == ord('6'):
+                        theKeys = [Keycode.F6]    
+                        print("F6")    
+                    if c == ord('7'):
+                        theKeys = [Keycode.F7]    
+                        print("F7")    
+                    if c == ord('8'):
+                        theKeys = [Keycode.F8]    
+                        print("F8")    
+                    if c == ord('9'):
+                        theKeys = [Keycode.F9]    
+                        print("F9")    
+                    if c == ord('0'):
+                        theKeys = [Keycode.F10]    
+                        print("F10")    
+                    if c == ord('a'):
+                        theKeys = [Keycode.F11]    
+                        print("F11")    
+                    if c == ord('b'):
+                        theKeys = [Keycode.F12]    
+                        print("F12")    
+                else:
+                  pass # just do the default braille thing
             press(theKeys)
             clearDotLEDs()
             clearDotHeld()
@@ -301,6 +358,8 @@ def handle_up(key):
         if key.number == 14:
             isAlt = False
             keyboard.release(Keycode.ALT)
+        if key.number == 13:
+            isFn = False
         if key.number == 3:
             isShift = False
             keyboard.release(Keycode.SHIFT)
