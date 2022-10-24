@@ -94,6 +94,14 @@ isGUI = False
 isRepeat = False
 keyRepeated = None
 
+kRepeat = 1
+kGUI = 2
+kShift = 3
+kTab = 12
+kFn = 13
+kAlt = 14
+kCtrl = 15
+
 # Set up the keyboard and layout
 keyboard = Keyboard(usb_hid.devices)
 layout = KeyboardLayoutUS(keyboard)
@@ -198,31 +206,31 @@ def handle_down(key):
         keyToUsed[n] = True
     else:
         key.set_led(*yellow)
-        if key.number == 13:
+        if key.number == kFn:
             isFn = True
             print("Fn")
             key.set_led(*pink)
-        if key.number == 3:
+        if key.number == kShift:
             isShift = True
             print("shift")
             keyboard.press(Keycode.SHIFT)
-        if key.number == 15:
+        if key.number == kCtrl:
             isCtrl = True
             keyboard.press(Keycode.CONTROL)
             print("ctrl")
-        if key.number == 14:
+        if key.number == kAlt:
             isAlt = True
             keyboard.press(Keycode.ALT)
             print("alt")
-        if key.number == 2:
+        if key.number == kGUI:
             isGUI = True
             keyboard.press(Keycode.GUI)
             print("win")
-        if key.number == 12:
+        if key.number == kTab:
             key.set_led(*red)
             keyboard.press(Keycode.TAB)
             print("tab")
-        if key.number == 1:
+        if key.number == kRepeat:
             key.set_led(*purple)
             isRepeat = True
             print("repeat")
@@ -352,23 +360,23 @@ def handle_up(key):
             pass
     else:
         key.set_led(*black)
-        if key.number == 15:
+        if key.number == kCtrl:
             isCtrl = False
             keyboard.release(Keycode.CONTROL)
-        if key.number == 14:
+        if key.number == kAlt:
             isAlt = False
             keyboard.release(Keycode.ALT)
-        if key.number == 13:
+        if key.number == kFn:
             isFn = False
-        if key.number == 3:
+        if key.number == kShift:
             isShift = False
             keyboard.release(Keycode.SHIFT)
-        if key.number == 2:
+        if key.number == kGUI:
             isGUI = False
             keyboard.release(Keycode.GUI)
-        if key.number == 12:
+        if key.number == kTab:
             keyboard.release(Keycode.TAB)
-        if key.number == 1:
+        if key.number == kRepeat:
             isRepeat = False
             if keyRepeated == None:
                 pass
