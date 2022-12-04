@@ -19,17 +19,17 @@ btnDist=0.4;
 logoCenter=7.4;
 logoRadius=1.5;
 
-///*
+/*
 owner="Richard Fielding";
 reward="If Found: 703 789 3318";
 email="windwalkers@gmail.com";
-//*/
+*/
 
-/*
+///*
 owner="Rob Fielding";
 reward="If Found: 703 944 7005";
 email="rob.fielding@gmail.com";
-*/
+// */
 
 
 /*
@@ -129,7 +129,9 @@ difference() {
 if(owner == "Rob Fielding") {
     difference() {
         thePhone();
-        translate([-long/2,wide/2-3.5,-6]) linear_extrude(height=2) scale([0.4,0.4,0.1]) import("logo.svg",center=true);
+        //translate([-long/2,wide/2-3.5,-6]) linear_extrude(height=2) scale([0.4,0.4,0.1]) import("logo.svg",center=true);
+        translate([-long/2-21,-wide/2+3.5,-6]) scale([76,76,4]) cube(1,center=true);
+        translate([-long/2-60,-wide/2+4,-6]) scale([15,10,4]) cube(1,center=true);
     }
 }
 
