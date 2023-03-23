@@ -1,0 +1,635 @@
+,bitco93 ,a ,pe}-to-,pe} ,electronic ,ca% ,sy/em
+,sato%i ,nakamoto
+_+satoshin`gmx.com_:
+_+www.bitcoin.org_:
+
+,ab/ract4 ,a purely pe}-to-pe} v}.n ( electronic ca% wd all{ onl9e
+pay;ts 6be s5t directly f "o "py 6ano!r )|t go+ "? a
+f9ancial 9/itu;n4 ,digital signatures provide "p (! solu;n1 b ! ma9
+b5efits >e lo/ if a tru/$ ?ird "py is / requir$ 6prev5t d|#-sp5d+4
+,we propose a solu;n 6! d|#-sp5d+ pro#m us+ a pe}-to-pe} net"w4
+,! net"w "t/amps transac;ns 0ha%+ !m 96an ongo+ *a9 (
+ha%-bas$ pro(-(-"w1 =m+ a record t _c 2 *ang$ )|t r$o+
+! pro(-(-"w4 ,! l;ge/ *a9 n only s}ves z pro( (! sequ;e (
+ev5ts wit;s$1 b pro( t x came f ! l>ge/ pool ( ,,cpu p{}4 ,z
+l;g z a major;y ( ,,cpu p{} is 3troll$ 0nodes t >e n coop}at+ to
+attack ! net"w1 !y'll g5}ate ! l;ge/ *a9 & |tpace attack}s4 ,!
+net"w xf requires m9imal /ructure4 ,messages >e broadca/ on a be/ ef=t
+basis1 & nodes c l1ve & rejo9 ! net"w at w1 a3ept+ ! l;ge/
+pro(-(-"w *a9 z pro( ( :at happ5$ :ile !y 7 g"o4
+
+#a4
+
+,9troduc;n
+
+,-m}ce on ! ,9t}net has -e 6rely alm exclusively on f9ancial 9/itu;ns s}v+ z
+tru/$ ?ird "pies 6process electronic pay;ts4 ,:ile ! sy/em "ws well 5 =
+mo/ transac;ns1 x / su6}s f ! 9h}5t w1k;ses (! tru/ bas$ model4
+,-pletely non-rev}si# transac;ns >e n re,y possi#1 s9ce f9ancial 9/itu;ns _c
+avoid m$iat+ 4putes4 ,! co/ ( m$i,n 9cr1ses transac;n co/s1 limit+ !
+m9imum practical transac;n size & cutt+ (f ! possibil;y = small casual transac;ns1
+& "! is a broad} co/ 9 ! loss ( abil;y 6make non-rev}si# pay;ts = nonrev}si# s}vices4 ,)! possibil;y ( rev}sal1 ! ne$ = tru/ spr1ds4 ,m}*ants m/
+2 w>y ( _! cu/om}s1 hassl+ !m = m 9=m,n ?an !y wd o!rwise ne$4
+,a c}ta9 p}c5tage ( fraud is a3ept$ z unavoida#4 ,~! co/s & pay;t unc}ta9ties
+c 2 avoid$ 9 p}son 0us+ physical curr5cy1 b no me*anism exi/s 6make pay;ts
+ov} a -munic,ns *annel )|t a tru/$ "py4
+,:at is ne$$ is an electronic pay;t sy/em bas$ on cryptographic pro( 9/1d ( tru/1
+all{+ any two will+ "pies 6transact directly ) ea* o!r )|t ! ne$ =a tru/$
+?ird "py4 ,transac;ns t >e -put,n,y impractical 6rev}se wd protect sell}s
+f fraud1 & r|t9e escr{ me*anisms cd easily 2 imple;t$ 6protect buy}s4 ,9
+? pap}1 we propose a solu;n 6! d|#-sp5d+ pro#m us+ a pe}-to-pe} 4tribut$
+"t/amp s}v} 6g5}ate -put,nal pro( (! *ronological ord} ( transac;ns4 ,!
+sy/em is secure z l;g z h"o/ nodes collectively 3trol m ,,cpu p{} ?an any
+coop}at+ gr|p ( attack} nodes4
+
+#a
+
+ #b4
+
+,transac;ns
+
+,we def9e an electronic co9 z a *a9 ( digital signatures4 ,ea* {n} transf}s ! co9 6!
+next 0digit,y sign+ a ha% (! previ|s transac;n &! public key (! next {n}
+& a4+ ~! 6! 5d (! co94 ,a payee c v}ify ! signatures 6v}ify ! *a9 (
+{n}%ip4
+,transac;n
+
+,transac;n
+
+,{n} #a's
+,public ,key
+
+,transac;n
+
+,{n} #b's
+,public ,key
+
+,ha%
+
+,{n} #c's
+,public ,key
+
+,ha%
+,v}
+if
+
+,ha%
+,v}
+ify
+
+;y
+
+,{n} #j's
+,signature
+
+,{n} #a's
+,signature
+gn
+,si
+
+,{n} #a's
+,private ,key
+
+,{n} #b's
+,signature
+,si
+
+gn
+
+,{n} #b's
+,private ,key
+
+,{n} #c's
+,private ,key
+
+,! pro#m ( c|rse is ! payee c't v}ify t "o (! {n}s did n d|#-sp5d
+! co94 ,a -mon solu;n is 69troduce a tru/$ c5tral au?or;y1 or m9t1 t *ecks e
+transac;n = d|# sp5d+4 ,af ea* transac;n1 ! co9 m/ 2 return$ 6! m9t to
+issue a new co91 & only co9s issu$ directly f ! m9t >e tru/$ n 6be d|#-sp5t4
+,! pro#m ) ? solu;n is t ! fate (! 5tire m"oy sy/em dep5ds on !
+-pany runn+ ! m9t1 ) e transac;n hav+ 6g "? !m1 j l a bank4
+,we ne$ a way =! payee 6"k t ! previ|s {n}s did n sign any e>li}
+transac;ns4 ,= |r purposes1 ! e>lie/ transac;n is ! "o t c.ts1 s we don't c>e
+ab lat} attempts 6d|#-sp5d4 ,! only way 63firm ! abs;e (a transac;n is to
+2 aw>e ( all transac;ns4 ,9 ! m9t bas$ model1 ! m9t 0 aw>e ( all transac;ns &
+decid$ : >riv$ f/4 ,6a3ompli% ? )|t a tru/$ "py1 transac;ns m/ 2
+publicly ann|nc$ ,7#a7'1 & we ne$ a sy/em = "picipants 6agree on a s+le hi/ory (!
+ord} 9 : !y 7 rcvd4 ,! payee ne$s pro( t at ! "t ( ea* transac;n1 !
+major;y ( nodes agre$ x 0 ! f/ rcvd4
+
+#c4
+
+,"t/amp ,s}v}
+
+,! solu;n we propose 2g9s )a "t/amp s}v}4 ,a "t/amp s}v} "ws 0tak+ a
+ha% (a block ( items 6be "t/amp$ & widely publi%+ ! ha%1 s* z 9 a
+newspap} or ,us5et po/ ,7#b-e7'4 ,! "t/amp proves t ! data m/ h exi/$ at !
+"t1 obvi|sly1 9 ord} 6get 96! ha%4 ,ea* "t/amp 9cludes ! previ|s "t/amp 9
+xs ha%1 =m+ a *a91 ) ea* a4i;nal "t/amp re9=c+ ! "os 2f x4
+,ha%
+
+,ha%
+
+,block
+,item
+
+,block
+,item
+
+'''
+
+,item
+
+#b
+
+,item
+
+'''
+
+ #d4
+
+,pro(-(-,"w
+
+,6imple;t a 4tribut$ "t/amp s}v} on a pe}-to-pe} basis1 we w ne$ 6use a pro((-"w sy/em simil> 6,adam ,back's ,ha%ca% ,7#f7'1 r ?an newspap} or ,us5et po/s4
+,! pro(-(-"w 9volves scann+ =a value t :5 ha%$1 s* z ) ,,%a-#bef1 !
+ha% 2g9s )a numb} ( z}o bits4 ,! av}age "w requir$ is expon5tial 9 ! numb}
+( z}o bits requir$ & c 2 v}ifi$ 0execut+ a s+le ha%4
+,= |r "t/amp net"w1 we imple;t ! pro(-(-"w 09cre;t+ a nonce 9 !
+block until a value is f.d t gives ! block's ha% ! requir$ z}o bits4 ,once ! ,,cpu
+ef=t has be5 exp5d$ 6make x satisfy ! pro(-(-"w1 ! block _c 2 *ang$
+)|t r$o+ ! "w4 ,z lat} blocks >e *a9$ af x1 ! "w 6*ange ! block
+wd 9clude r$o+ all ! blocks af x4
+,block
+
+,block
+
+,prev ,ha%
+,tx
+
+,nonce
+
+,tx
+
+,prev ,ha%
+
+'''
+
+,tx
+
+,tx
+
+,nonce
+'''
+
+,! pro(-(-"w al solves ! pro#m ( det}m9+ repres5t,n 9 major;y deci.n
+mak+4 ,if ! major;y 7 bas$ on "o-,,ip-a4ress-"o-vote1 x cd 2 subv}t$ 0any"o
+a# 6allocate _m ,,ip,'s4 ,pro(-(-"w is ess5ti,y "o-,,cpu-"o-vote4 ,! major;y
+deci.n is repres5t$ 0! l;ge/ *a91 : has ! grte/ pro(-(-"w ef=t 9ve/$
+9 x4 ,if a major;y ( ,,cpu p{} is 3troll$ 0h"o/ nodes1 ! h"o/ *a9 w gr{ !
+fa/e/ & |tpace any -pet+ *a9s4 ,6modify a pa/ block1 an attack} wd h to
+redo ! pro(-(-"w (! block & all blocks af x & !n cat* up )& surpass !
+"w (! h"o/ nodes4 ,we w %{ lat} t ! probabil;y (a sl{} attack} cat*+ up
+dim9i%es expon5ti,y z subsequ5t blocks >e a4$4
+,6-p5sate = 9cr1s+ h>dw>e spe$ & v>y+ 9t}e/ 9 runn+ nodes ov} "t1
+! pro(-(-"w di6iculty is det}m9$ 0a mov+ av}age t>get+ an av}age numb} (
+blocks p} h|r4 ,if !y're g5}at$ too fa/1 ! di6iculty 9cr1ses4
+
+#e4
+
+,net"w
+
+,! /eps 6run ! net"w >e z foll{s3
+#a7
+#b7
+#c7
+#d7
+#e7
+#f7
+
+,new transac;ns >e broadca/ 6all nodes4
+,ea* node collects new transac;ns 96a block4
+,ea* node "ws on f9d+ a di6icult pro(-(-"w = xs block4
+,:5 a node f9ds a pro(-(-"w1 x broadca/s ! block 6all nodes4
+,nodes a3ept ! block only if all transac;ns 9 x >e valid & n alr sp5t4
+,nodes express _! a3ept.e (! block 0"w+ on cr1t+ ! next block 9 !
+*a91 us+ ! ha% (! a3ept$ block z ! previ|s ha%4
+
+,nodes alw 3sid} ! l;ge/ *a9 6be ! correct "o & w keep "w+ on
+ext5d+ x4 ,if two nodes broadca/ di6}5t v}.ns (! next block simultane|sly1 "s
+nodes may rcv "o or ! o!r f/4 ,9 t case1 !y "w on ! f/ "o !y rcvd1
+b save ! o!r bran* 9 case x 2comes l;g}4 ,! tie w 2 brok5 :5 ! next pro((-"w is f.d & "o bran* 2comes l;g}2 ! nodes t 7 "w+ on ! o!r
+bran* w !n swit* 6! l;g} "o4
+
+#c
+
+ ,new transac;n broadca/s d n necess>ily ne$ 6r1* all nodes4 ,z l;g z !y r1*
+_m nodes1 !y w get 96a block 2f l;g4 ,block broadca/s >e al tol}ant ( dropp$
+messages4 ,if a node does n rcv a block1 x w reque/ x :5 x rcvs ! next block &
+r1lizes x miss$ "o4
+
+#f4
+
+,9c5tive
+
+,03v5;n1 ! f/ transac;n 9 a block is a special transac;n t />ts a new co9 {n$
+0! cr1tor (! block4 ,? a4s an 9c5tive = nodes 6support ! net"w1 & provides
+a way 69iti,y 4tribute co9s 96circul,n1 s9ce "! is no c5tral au?or;y 6issue !m4
+,! /1dy a4i;n (a 3/ant ( am.t ( new co9s is analog|s 6gold m9}s exp5d+
+res|rces 6add gold 6circul,n4 ,9 |r case1 x is ,,cpu "t & electric;y t is exp5d$4
+,! 9c5tive c al 2 fund$ ) transac;n fees4 ,if ! |tput value (a transac;n is
+less ?an xs 9put value1 ! di6};e is a transac;n fee t is a4$ 6! 9c5tive value (
+! block 3ta9+ ! transac;n4 ,once a predet}m9$ numb} ( co9s h 5t}$
+circul,n1 ! 9c5tive c transi;n 5tirely 6transac;n fees & 2 -pletely 9fl,n
+free4
+,! 9c5tive may help 5c|rage nodes 6/ay h"o/4 ,if a gre$y attack} is a# to
+assem# m ,,cpu p{} ?an all ! h"o/ nodes1 he wd h 6*oose 2t us+ x
+6defraud p 0/1l+ back 8 pay;ts1 or us+ x 6g5}ate new co9s4 ,he "| to
+f9d x m pr(ita# 6play 0! rules1 s* rules t fav|r hm ) m new co9s ?an
+"ey"o else -b9$1 ?an 6"um9e ! sy/em &! valid;y ( 8 {n w1l?4
+
+#g4
+
+,reclaim+ ,disk ,space
+
+,once ! late/ transac;n 9 a co9 is buri$ "u 5 blocks1 ! sp5t transac;ns 2f
+x c 2 4c>d$ 6save disk space4 ,6facilitate ? )|t br1k+ ! block's ha%1
+transac;ns >e ha%$ 9 a ,m}kle ,tree ,7#g7',7#b7',7#e7'1 ) only ! root 9clud$ 9 ! block's ha%4
+,old blocks c !n 2 -pact$ 0/u2+ (f bran*es (! tree4 ,! 9t}ior ha%es d
+n ne$ 6be /or$4
+,block
+
+,block
+
+,block ,h1d} 7,block ,ha%7
+,prev ,ha%
+
+,nonce
+
+,block ,h1d} 7,block ,ha%7
+,prev ,ha%
+
+,root ,ha%
+
+,ha%#ja
+
+,nonce
+
+,root ,ha%
+
+,ha%#bc
+
+,ha%#ja
+
+,ha%#bc
+
+,ha%#j
+
+,ha%#a
+
+,ha%#b
+
+,ha%#c
+
+,ha%#b
+
+,ha%#c
+
+,tx#j
+
+,tx#a
+
+,tx#b
+
+,tx#c
+
+,tx#c
+
+,transac;ns ,ha%$ 9 a ,m}kle ,tree
+
+,af ,prun+ ,tx#j-b f ! ,block
+
+,a block h1d} ) no transac;ns wd 2 ab #hj bytes4 ,if we suppose blocks >e
+g5}at$ e #aj m9utes1 #hj bytes 99 #f 99 #bd 99 #cfe .k #d.b;,,mb p} ye>4 ,) -put} sy/ems
+typic,y sell+ ) #b;,,gb ( ,,ram z ( #bjjh1 & ,moore's ,law predict+ curr5t gr{? (
+#a.b;,,gb p} ye>1 /orage %d n 2 a pro#m ev5 if ! block h1d}s m/ 2 kept 9
+memory4
+
+#d
+
+ #h4
+
+,simplifi$ ,pay;t ,v}ific,n
+
+,x is possi# 6v}ify pay;ts )|t runn+ a full net"w node4 ,a us} only ne$s 6keep
+a copy (! block h1d}s (! l;ge/ pro(-(-"w *a91 : he c get 0qu}y+
+net"w nodes until he's 3v9c$ he has ! l;ge/ *a91 & obta9 ! ,m}kle bran*
+l9k+ ! transac;n 6! block x's "t/amp$ in4 ,he c't *eck ! transac;n =
+hmf1 b 0l9k+ x 6a place 9 ! *a91 he c see t a net"w node has a3ept$ x1
+& blocks a4$ af x fur!r 3firm ! net"w has a3ept$ x4
+,l;ge/ ,pro(-(-,"w ,*a9
+,block ,h1d}
+,prev ,ha%
+
+,block ,h1d}
+,nonce
+
+,block ,h1d}
+
+,prev ,ha%
+
+,m}kle ,root
+
+,nonce
+
+,prev ,ha%
+
+,m}kle ,root
+
+,ha%#ja
+
+,nonce
+
+,m}kle ,root
+
+,ha%#bc
+,m}kle ,bran* = ,tx#c
+,ha%#b
+
+,ha%#c
+
+,tx#c
+
+,z s*1 ! v}ific,n is relia# z l;g z h"o/ nodes 3trol ! net"w1 b is m
+vuln}a# if ! net"w is ov}p{}$ 0an attack}4 ,:ile net"w nodes c v}ify
+transac;ns = !mvs1 ! simplifi$ me?od c 2 fool$ 0an attack}'s fabricat$
+transac;ns = z l;g z ! attack} c 3t9ue 6ov}p{} ! net"w4 ,"o /rategy to
+protect ag/ ? wd 2 6a3ept al}ts f net"w nodes :5 !y detect an 9valid
+block1 prompt+ ! us}'s s(tw>e 6d{nload ! full block & al}t$ transac;ns to
+3firm ! 9consi/5cy4 ,busi;ses t rcv frequ5t pay;ts w probably / want to
+run _! {n nodes = m 9dep5d5t secur;y & qk} v}ific,n4
+
+#i4
+
+,-b9+ & ,splitt+ ,value
+
+,al? x wd 2 possi# 6h&le co9s 9dividu,y1 x wd 2 unwieldy 6make a
+sep>ate transac;n = e c5t 9 a transf}4 ,6all{ value 6be split & -b9$1
+transac;ns 3ta9 multiple 9puts & |tputs4 ,norm,y "! w 2 ei a s+le 9put
+f a l>g} previ|s transac;n or multiple 9puts -b9+ small} am.ts1 & at mo/ two
+|tputs3 "o =! pay;t1 & "o return+ ! *ange1 if any1 back 6! s5d}4
+,transac;n
+,9
+
+,|
+
+,9
+
+'''
+
+'''
+
+,x %d 2 not$ t fan-|1 ": a transac;n dep5ds on s"eal transac;ns1 & ~?
+transac;ns dep5d on _m m1 is n a pro#m "h4 ,"! is n"e ! ne$ 6extract a
+-plete /&al"o copy (a transac;n's hi/ory4
+
+#e
+
+ #aj4 ,privacy
+,! tradi;nal bank+ model a*ieves a level ( privacy 0limit+ a3ess 69=m,n 6!
+"pies 9volv$ &! tru/$ ?ird "py4 ,! necess;y 6ann|nce all transac;ns publicly
+precludes ? me?od1 b privacy c / 2 ma9ta9$ 0br1k+ ! fl{ ( 9=m,n 9
+ano!r place3 0keep+ public keys anonym|s4 ,! public c see t "s"o is s5d+
+an am.t 6"s"o else1 b )|t 9=m,n l9k+ ! transac;n 6any"o4 ,? is
+simil> 6! level ( 9=m,n rel1s$ 0/ock ex*anges1 ": ! "t & size (
+9dividual trades1 ! 8tape01 is made public1 b )|t tell+ :o ! "pies w}e4
+,tradi;nal ,privacy ,model
+,id5tities
+
+,transac;ns
+
+,tru/$
+,?ird ,"py
+
+,c.t}"py
+
+,public
+
+,new ,privacy ,model
+,id5tities
+
+,transac;ns
+
+,public
+
+,z an a4i;nal firewall1 a new key pair %d 2 us$ = ea* transac;n 6keep !m
+f 2+ l9k$ 6a -mon {n}4 ,"s l9k+ is / unavoida# ) multi-9put
+transac;ns1 : necess>ily rev1l t _! 9puts 7 {n$ 0! same {n}4 ,! risk
+is t if ! {n} (a key is rev1l$1 l9k+ cd rev1l o!r transac;ns t 2l;g$ to
+! same {n}4
+
+#aa4 ,calcul,ns
+,we 3sid} ! sc5>io ( an attack} try+ 6g5}ate an alt}nate *a9 fa/} ?an ! h"o/
+*a94 ,ev5 if ? is a3ompli%$1 x does n ?r{ ! sy/em op5 6>bitr>y *anges1 s*
+z cr1t+ value | ( ?9 air or tak+ m"oy t n"e 2l;g$ 6! attack}4 ,nodes >e
+n go+ 6a3ept an 9valid transac;n z pay;t1 & h"o/ nodes w n"e a3ept a block
+3ta9+ !m4 ,an attack} c only try 6*ange "o ( 8 {n transac;ns 6take back
+m"oy he rec5tly sp5t4
+,! race 2t ! h"o/ *a9 & an attack} *a9 c 2 "*iz$ z a ,binomial
+,r&om ,walk4 ,! su3ess ev5t is ! h"o/ *a9 2+ ext5d$ 0"o block1 9cr1s+ xs
+l1d by `+#a1 &! failure ev5t is ! attack}'s *a9 2+ ext5d$ 0"o block1 reduc+ !
+gap by -#a4
+,! probabil;y ( an attack} cat*+ up f a giv5 deficit is analog|s 6a ,gam#r's
+,ru9 pro#m4 ,suppose a gam#r ) unlimit$ cr$it />ts at a deficit & plays pot5ti,y an
+9f9ite numb} ( trials 6try 6r1* br1kev54 ,we c calculate ! probabil;y he "e
+r1*es br1kev51 or t an attack} "e cat*es up )! h"o/ *a91 z foll{s ,7#h7'3
+;p .k probabil;y an h"o/ node f9ds ! next block
+;q .k probabil;y ! attack} f9ds ! next block
+qz .k probabil;y ! attack} w "e cat* up f ;z blocks 2h
+
+`;7
+
+;q ;z.k
+
+#a
+if ;p'\x2264'q
+;z
+'\xe09e'q _/ ;p'\xe09f' if ;p'\xe085'q
+
+`72
+#f
+
+ ,giv5 |r assump;n t ;p .1 ;q1 ! probabil;y drops expon5ti,y z ! numb} ( blocks !
+attack} has 6cat* up ) 9cr1ses4 ,)! o4s ag/ hm1 if he doesn't make a lucky
+lunge =w>d e>ly on1 8 *.es 2come vani%+ly small z he falls fur!r 2h4
+,we n{ 3sid} h{ l;g ! recipi5t (a new transac;n ne$s 6wait 2f 2+
+su6ici5tly c}ta9 ! s5d} c't *ange ! transac;n4 ,we assume ! s5d} is an attack}
+:o wants 6make ! recipi5t 2lieve he pd hm =a :ile1 !n swit* x 6pay back to
+hmf af "s "t has pass$4 ,! rcvr w 2 al}t$ :5 t happ5s1 b !
+s5d} hopes x w 2 too late4
+,! rcvr g5}ates a new key pair & gives ! public key 6! s5d} %ortly 2f
+sign+4 ,? prev5ts ! s5d} f prep>+ a *a9 ( blocks ah1d ( "t 0"w+ on
+x 3t9u|sly until he is lucky 5 6get f> 5 ah1d1 !n execut+ ! transac;n at
+t mo;t4 ,once ! transac;n is s5t1 ! 4h"o/ s5d} />ts "w+ 9 secret on a
+p>allel *a9 3ta9+ an alt}nate v}.n ( 8 transac;n4
+,! recipi5t waits until ! transac;n has be5 a4$ 6a block & ;z blocks h be5
+l9k$ af x4 ,he doesn't "k ! exact am.t ( progress ! attack} has made1 b
+assum+ ! h"o/ blocks took ! av}age expect$ "t p} block1 ! attack}'s pot5tial
+progress w 2 a ,poisson 4tribu;n ) expect$ value3
+
+'\xe0c1'.k;z
+
+;q
+;p
+
+,6get ! probabil;y ! attack} cd / cat* up n{1 we multiply ! ,poisson d5s;y =
+ea* am.t ( progress he cd h made 0! probabil;y he cd cat* up f t po9t3
+;k
+
+'\x2212''\xe0c1'
+
+`;7
+
+'\xe09e' ;z'\x2212'k '\xe09f'
+if ;k '\x2264' ;z
+'\x2211' '\xe0c1' ke6 '\x22c5' '\xe09e'q _/ ;p'\xe09f'#a
+if ;k '\xe085' ;z
+;k .k#j
+'\x221e'
+
+`72
+
+,re>rang+ 6avoid summ+ ! 9f9ite tail (! 4tribu;n'''
+;z
+
+'\xe0c1'k ;e'\x2212''\xe0c1'
+'\xe09e'#a'\x2212''\xe09e'q _/ ;p'\xe09f''\xe09e' ;z'\x2212' ;k '\xe09f''\xe09f'
+;k6
+;k .k#j
+
+#a'\x2212''\x2211'
+
+,3v}t+ 6;,c code'''
+#9clude "kma?4;h.1
+d|# ,attack},su3ess,probabil;y7d|# ;q1 9t ;z7
+`;7
+d|# ;p .k #a.j--;q2
+d|# lambda .k ;z 99 7;q _/ ;p72
+d|# sum .k #a.j2
+9t ;i1 ;k2
+= 7;k .k #j2 ;k "k.k ;z2 ;k`+`+7
+`;7
+d|# poisson .k exp7-lambda72
+= 7;i .k #a2 ;i "k.k ;k2 ;i`+`+7
+poisson 99.k lambda _/ ;i2
+sum -.k poisson 99 7#a--p{7;q _/ ;p1 ;z--;k772
+`72
+return sum2
+`72
+
+#g
+
+ ,runn+ "s results1 we c see ! probabil;y drop (f expon5ti,y ) z4
+;q.k#j.a
+;z.k#j
+;z.k#a
+;z.k#b
+;z.k#c
+;z.k#d
+;z.k#e
+;z.k#f
+;z.k#g
+;z.k#h
+;z.k#i
+;z.k#aj
+
+;,p.k#a.jjjjjjj
+;,p.k#j.bjdehgc
+;,p.k#j.jejiggi
+;,p.k#j.jacagbb
+;,p.k#j.jjcdeeb
+;,p.k#j.jjjiacg
+;,p.k#j.jjjbdbh
+;,p.k#j.jjjjfdg
+;,p.k#j.jjjjagc
+;,p.k#j.jjjjjdf
+;,p.k#j.jjjjjab
+
+;q.k#j.c
+;z.k#j
+;z.k#e
+;z.k#aj
+;z.k#ae
+;z.k#bj
+;z.k#be
+;z.k#cj
+;z.k#ce
+;z.k#dj
+;z.k#de
+;z.k#ej
+
+;,p.k#a.jjjjjjj
+;,p.k#j.aggcebc
+;,p.k#j.jdaffje
+;,p.k#j.jajajjh
+;,p.k#j.jjbdhjd
+;,p.k#j.jjjfacb
+;,p.k#j.jjjaebb
+;,p.k#j.jjjjcgi
+;,p.k#j.jjjjjie
+;,p.k#j.jjjjjbd
+;,p.k#j.jjjjjjf
+
+,solv+ = ;,p less ?an #j.a`3p'''
+;,p "k #j.jja
+;q.k#j.aj
+;z.k#e
+;q.k#j.ae
+;z.k#h
+;q.k#j.bj
+;z.k#aa
+;q.k#j.be
+;z.k#ae
+;q.k#j.cj
+;z.k#bd
+;q.k#j.ce
+;z.k#da
+;q.k#j.dj
+;z.k#hi
+;q.k#j.de
+;z.k#cdj
+
+#ab4 ,3clu.n
+,we h propos$ a sy/em = electronic transac;ns )|t rely+ on tru/4 ,we />t$ )
+! usual frame"w ( co9s made f digital signatures1 : provides /r;g 3trol (
+{n}%ip1 b is 9complete )|t a way 6prev5t d|#-sp5d+4 ,6solve ?1 we
+propos$ a pe}-to-pe} net"w us+ pro(-(-"w 6record a public hi/ory ( transac;ns
+t qkly 2comes -put,n,y impractical = an attack} 6*ange if h"o/ nodes
+3trol a major;y ( ,,cpu p{}4 ,! net"w is robu/ 9 xs un/ructur$ simplic;y4 ,nodes
+"w all at once ) ll coord9,n4 ,!y d n ne$ 6be id5tifi$1 s9ce messages >e
+n r|t$ 6any "picul> place & only ne$ 6be deliv}$ on a be/ ef=t basis4 ,nodes c
+l1ve & rejo9 ! net"w at w1 a3ept+ ! pro(-(-"w *a9 z pro( ( :at
+happ5$ :ile !y 7 g"o4 ,!y vote ) _! ,,cpu p{}1 express+ _! a3ept.e (
+valid blocks 0"w+ on ext5d+ !m & reject+ 9valid blocks 0refus+ 6"w on
+!m4 ,any ne$$ rules & 9c5tives c 2 5=c$ ) ? 3s5sus me*anism4
+
+#h
+
+ ,ref};es
+,7#a7' ,w4 ,dai1 8;b-m"oy10 _+http://www.weidai.com/bmoney.txt,_: #aiih4
+,7#b7' ,h4 ,massias1 ,x4,s4 ,avila1 & ,j4-,j4 ,quisquat}1 8,design (a secure "t/amp+ s}vice ) m9imal
+tru/ require;ts10 ,9 #bj? ,symposium on ,9=m,n ,!ory 9 ! ,b5elux1 ,may #aiii4
+,7#c7' ,s4 ,hab}1 ,w4,s4 ,/ornetta1 8,h{ 6"t-/amp a digital docu;t10 ,9 ,j|rnal ( ,cryptology1 vol #c1 no
+#b1 pages #ii-aaa1 #aiia4
+,7#d7' ,d4 ,bay}1 ,s4 ,hab}1 ,w4,s4 ,/ornetta1 8,improv+ ! e6ici5cy & reliabil;y ( digital "t-/amp+10
+,9 ,sequ;es ,,ii3 ,me?ods 9 ,-munic,n1 ,secur;y & ,-put} ,sci;e1 pages #cbi-ccd1 #aiic4
+,7#e7' ,s4 ,hab}1 ,w4,s4 ,/ornetta1 8,secure "ns = bit-/r+s10 ,9 ,proce$+s (! #d? ,,acm ,3f};e
+on ,-put} & ,-munic,ns ,secur;y1 pages #bh-ce1 ,april #aiig4
+,7#f7' ,a4 ,back1 8,ha%ca%--a d5ial ( s}vice c.t}-m1sure10
+_+http://www.hashcash.org/papers/hashcash.pdf,_: #bjjb4
+,7#g7' ,r4,c4 ,m}kle1 8,protocols = public key cryptosy/ems10 ,9 ,proc4 #aihj ,symposium on ,secur;y &
+,privacy1 ,,ieee ,-put} ,society1 pages #abb-acc1 ,april #aihj4
+,7#h7' ,w4 ,fell}1 8,an 9troduc;n 6probabil;y !ory & xs applic,ns10 #aieg4
+
+#i
+
+ 
