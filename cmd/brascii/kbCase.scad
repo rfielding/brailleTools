@@ -6,7 +6,7 @@ cornerRadius = 10.1;
 keybowBoard = 76.2;
 ifLost = "If Lost: 703 944 7005";
 email = "rob.fielding@gmail.com";
-description = "8 dot braille keyboard";
+description = "8 dot brl keeb";
 
 module radiusBox(l,w,h,r) {
     difference() {
@@ -76,7 +76,7 @@ module thePhone() {
     kbb = keybowBoard;
     translate([long-73,-2.05,-4-1]) union() {
         union() {
-            translate([-5,0,0]) scale([kbb+5,kbb,2.5]) cube(1);
+            translate([-5,0,-0.25]) scale([kbb+5-1.5,kbb,2.75]) cube(1);
             translate([-5,2,2.5]) scale([kbb+5,kbb-4,2.5]) cube(1);            
             translate([-5,2,-2]) scale([kbb+5,kbb-4,6]) cube(1);
         }
@@ -97,7 +97,7 @@ module theCase() {
     union() {
         translate([80-7,-1.7-0.75,0]) scale([0.5, 1.1, 0.5]) rotate([90,0,0]) linear_extrude(1) text(ifLost);        
         translate([140,wide+3-1.5+1,0]) scale([-0.5, 1.1, -0.5]) rotate([-90,0,0]) linear_extrude(1) text(email);        
-        translate([-3,wide,0]) scale([1,0.45,0.45]) rotate([90,0,-90]) linear_extrude(1) text(description, font="orbitreader2");
+        translate([-3,wide,-2]) scale([1,0.45,0.45]) rotate([90,0,-90]) linear_extrude(1) scale(1.6) text(description, font="orbitreader2");
         
         translate([2.75,2.75,high+0.7]) sphere(1.5);
         translate([2.75,wide-2.75,high+0.7]) sphere(1.5);
