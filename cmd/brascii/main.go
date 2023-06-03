@@ -56,6 +56,12 @@ func brailleInit() {
 	for i := 0; i < 32; i++ {
 		braillePerm[0x60+i] = braillePerm[0x40+i] ^ 0x40
 	}
+	// Swap 124 and 127 the underscore and delete,
+	// a strange exception logically, but I see it in real terminals
+	braillePermTmp := braillePerm[0x7F]
+	braillePerm[0x7F] = braillePerm[0x5F]
+	braillePerm[0x5F] = braillePermTmp
+
 	// Duplicated it all in high bits
 	for i := 0; i < 128; i++ {
 		braillePerm[0x80+i] = braillePerm[i] ^ 0x80
