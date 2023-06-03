@@ -136,6 +136,10 @@ for i in range(0,32): #uppercase
     braillePermutation[64+i] = braillePattern[32+i]+64
 for i in range(0,32): #lowercase
     braillePermutation[64+32+i] = braillePattern[32+i]
+# this odd swap shows up in real terminals
+bpt = braillePermutation[0x5F]
+braillePermutation[0x5F] = braillePermutation[0x7F]
+braillePermutation[0x7F] = bpt
 for i in range(0,128): # upper unused half
     braillePermutation[128+i] = braillePermutation[i] + 128
 brailleAsciiMap = [0 for i in range(0,256)]
