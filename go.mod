@@ -1,4 +1,4 @@
-module github.com/rfielding/teeny
+module github.com/rfielding/brailleTools
 
 go 1.14
 

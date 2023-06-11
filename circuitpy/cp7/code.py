@@ -65,7 +65,7 @@ from pmk.platform.keybow2040 import Keybow2040 as Hardware
 # and interpret it as 8dot computer braille. Here is the full map, which
 # includes theoretical, but unused, dot patterns as well:
 #
-#   https://github.com/rfielding/teeny/tree/master/cmd/brascii 
+#   https://github.com/rfielding/brailleTools/tree/master/cmd/brascii 
 #
 # Importantly, It shows you how to make raw chars like TAB and ESC, so
 # that you can use text editors like vi.
@@ -73,7 +73,7 @@ from pmk.platform.keybow2040 import Keybow2040 as Hardware
 #
 # This code is hosted here:
 #
-# https://github.com/rfielding/teeny/blob/master/circuitpy/code.py
+# https://github.com/rfielding/brailleTools/blob/master/circuitpy/code.py
 #
 # To get good at this keyboard, practice computer braille.
 # Start off typing on qwerty, then mimic it in braille on

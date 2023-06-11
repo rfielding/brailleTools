@@ -2,7 +2,7 @@ package goatrope_test
 
 import (
 	"fmt"
-	"github.com/rfielding/teeny/goatrope"
+	"github.com/rfielding/brailleTools/goatrope"
 	"io"
 	"os"
 	"testing"

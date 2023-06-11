@@ -1,7 +1,7 @@
 package goatrope_test
 
 import (
-	"github.com/rfielding/teeny/goatrope"
+	"github.com/rfielding/brailleTools/goatrope"
 	"testing"
 )
 

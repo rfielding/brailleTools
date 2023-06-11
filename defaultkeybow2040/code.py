@@ -68,7 +68,7 @@ from keybow2040 import Keybow2040
 #
 # This code is hosted here:
 #
-# https://github.com/rfielding/teeny/blob/master/circuitpy/code.py
+# https://github.com/rfielding/brailleTools/blob/master/circuitpy/code.py
 #
 # To get good at this keyboard, practice computer braille.
 # Start off typing on qwerty, then mimic it in braille on
