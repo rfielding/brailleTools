@@ -351,6 +351,7 @@ function substFinalFwd(w) {
 
 function compressMiddle(w) {
   tables = [
+    ilContractions,
     sContractions,
     sGroupsigns,
     lGroupsigns1,
@@ -464,7 +465,7 @@ for(i=0; i<sentence.length; i++) {
 */
 
 sentence = [
-  "Braille","is","a","crazy","language","because","engineering","the","compression","is","farking", "painful"
+  "Braille","is","a","crazy","language","because","engineering","the","compression","is","farking", "painful", "consuming", "chars", "until", "they", "are", "gone"
 ];
 
 for(var j=0; j<sentence.length; j++) {
