@@ -192,15 +192,6 @@ var lGroupsigns2 = [
   ["in","9"]
 ];
 
-var lWordsigns = [
-  ["be","2"],
-  ["enough","5"],
-  ["were","7"],
-  ["his","8"],
-  ["in","9"],
-  ["was","0"]
-];
-
 var ilContractions = [
   ["day","\"d"],
   ["ever", "\"e"],
