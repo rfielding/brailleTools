@@ -26,7 +26,7 @@ function IsLowerCaseChar(c) {
 function IsAllUpperCaseWord(w) {
   if(w.length > 1) {
     allUc = true;
-    for(i=0; i<w.length; i++) {
+    for(var i=0; i<w.length; i++) {
       if(IsLowerCaseChar(w[i])) {
         allUc = false;
       }
@@ -449,26 +449,12 @@ function compressWord2(w) {
 }
 
 
-/*
-sentence = [
- "prompt",
- "engineering"
-];
-
-for(i=0; i<sentence.length; i++) {
-  process.stdout.write(sentence[i] + " ");
-}
-process.stdout.write("\n");
-for(i=0; i<sentence.length; i++) {
-  process.stdout.write(compressWord(sentence[i]) + " ");
-}
-*/
 
 sentence = [
   "Braille","is","a","crazy","language","because","engineering","the","compression","is","farking", "painful", "consuming", "chars", "until", "they", "are", "gone"
 ];
 
-for(var j=0; j<sentence.length; j++) {
-  process.stdout.write(compressWord2(sentence[j]) + " ");
+for(var i=0; i<sentence.length; i++) {
+  process.stdout.write(compressWord2(sentence[i]) + " ");
 }
 
