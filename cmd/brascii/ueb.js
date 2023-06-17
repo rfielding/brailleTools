@@ -60,6 +60,18 @@ var brlWord = [];
 // I am transliterating this:
 // https://www.teachingvisuallyimpaired.com/uploads/1/4/1/2/14122361/ueb_braille_chart.pdf
 
+var digits = [
+  ["1","a"],
+  ["2","b"],
+  ["3","c"],
+  ["4","d"],
+  ["5","e"],
+  ["6","f"],
+  ["7","g"],
+  ["8","h"],
+  ["9","i"],
+  ["0","j"],
+];
   
 var punctuation = [
   ["_",",_"],
@@ -400,11 +412,27 @@ function compressWord(w) {
     }
   }
 
+  // replace digit with number
+  var allDigits = true;
+  for(var i=0; i<middle.length; i++) {
+    if(!IsDigit(middle[i])) {
+      allDigits = false;
+    }
+  }
+  if(allDigits) {
+    v = "";
+    for(var i=0; i<middle.length; i++) {
+      v += findFirstFwd(middle[i],digits);
+    }
+    return [prefix,v]; 
+  }
+
   // whole word substitutions
   var v = findFirstFwd(middle,sfWords);
   if(v != null) {
     return [prefix, v];
   }
+
 
   // single-char substitutions
   var v = findFirstFwd(middle,aWordsigns);
