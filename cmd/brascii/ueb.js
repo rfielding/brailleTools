@@ -1,4 +1,5 @@
 let fs = require('fs')
+let readline = require('readline')
 
 
 // is this upper-case char
@@ -61,6 +62,7 @@ var brlWord = [];
 
   
 var punctuation = [
+  ["_",",_"],
   [",","1"],
   [".","4"],
   ["'","'"],
@@ -151,7 +153,7 @@ var sGroupsigns = [
   ["ou","|"],
   ["st","/"],
   ["gh","<"],
-  ["ed","?"],
+  ["ed","$"],
   ["er","}"],
   ["ow","{"],
   ["ar",">"],
@@ -159,7 +161,7 @@ var sGroupsigns = [
 ];
 
 var lGroupsigns1 = [
-  ["ea","'"],
+  ["ea","1"],
   ["bb","2"],
   ["cc","3"],
   ["ff","6"],
@@ -449,12 +451,41 @@ function compressWord2(w) {
 }
 
 
-
-sentence = [
-  "Braille","is","a","crazy","language","because","engineering","the","compression","is","farking", "painful", "consuming", "chars", "until", "they", "are", "gone"
-];
-
-for(var i=0; i<sentence.length; i++) {
-  process.stdout.write(compressWord2(sentence[i]) + " ");
+function translateString(w) {
+  out = [];
+  wordChars = [];
+  isReadingToken = false;
+  for(var i=0; i<w.length; i++) {
+    var c = w[i];
+    var isReadingToken = (IsUpperCaseChar(c) || IsLowerCaseChar(c) || IsDigit(c));
+    if(isReadingToken) {
+      wordChars.push(c);
+    } else {
+      out.push(compressWord2(wordChars.join("")));
+      wordChars = [];
+      f = findFirstFwd(c, punctuation);
+      if(f != null) {
+        out.push(f);
+      } else {
+        out.push(c);
+      }
+    }
+  }
+  if(wordChars.length > 0) {
+    out.push(compressWord2(wordChars.join("")));
+  }
+  return out.join("");
 }
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function (line) {
+  console.log(translateString(line));
+});
+
+
 
