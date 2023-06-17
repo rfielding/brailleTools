@@ -24,6 +24,10 @@ function IsLowerCaseChar(c) {
   return false;
 }
 
+function IsChar(c) {
+  return IsLowerCaseChar(c) || IsUpperCaseChar(c);
+}
+
 function IsAllUpperCaseWord(w) {
   if(w.length > 1) {
     allUc = true;
@@ -464,45 +468,54 @@ function translateString(w) {
   var out = [];
   var wordChars = [];
   var digits = [];
-  var isReadingNumber = false;
-  var isReadingToken = false;
-  for(var i=0; i<w.length; i++) {
-    var c = w[i];
-    var isReadingToken = (IsUpperCaseChar(c) || IsLowerCaseChar(c));
-    var isReadingNumber = IsDigit(c);
-    flush = function() {
-      if(wordChars.length > 0) {
-        var v = compressWord2(wordChars.join(""));
-        out.push(v);
-        wordChars = [];
-      }
-      if(digits.length > 0) {
-        var v = "#";
-        for(var i=0; i<digits.length; i++) {
-          v += dmap[digits[i]];
-        }
-        out.push(v);
-        digits = [];
-      }
-    };
-    if(isReadingToken) {
-      wordChars.push(c);
-    }
-    if(isReadingNumber) {
-      digits.push(c);
-    }
 
-    if(!isReadingToken && !isReadingNumber) {
-      flush();
-      f = findFirstFwd(c, punctuation);
-      if(f != null) {
-        out.push(f);
-      } else {
-        out.push(c);
+  flush = function() {
+    if(wordChars.length > 0) {
+      out.push(compressWord2(wordChars.join("")));
+    } else if(digits.length > 0) {
+      var v = "#";
+      for(var i=0; i<digits.length; i++) {
+        v = v +  dmap[digits[i]];
       }
+      out.push(v);
     }
+    wordChars = [];
+    digits = [];
+  };
+
+  if(w.length > 0) {
+    var wasReadingToken = IsChar(w[0]);
+    var wasReadingNumber = IsDigit(w[0]);
+    for(var i=0; i<w.length; i++) {
+      var c = w[i];
+      var isReadingToken  = IsChar(c); 
+      var isReadingNumber = IsDigit(c);
+      if(isReadingToken) {
+        if(wasReadingNumber) {
+          flush();
+          out.push(";");
+        }
+        wordChars.push(c);
+      } else if(isReadingNumber) {
+        if(wasReadingToken) {
+          flush();
+        }
+        digits.push(c);
+      } else {
+        flush();
+        var f = findFirstFwd(c, punctuation);
+        if(f != null) {
+          out.push(f);
+        } else {
+          // passing it off literally is bad
+          out.push(c);
+        }
+      }
+      wasReadingToken = isReadingToken;
+      wasReadingNumber = isReadingNumber;
+    }
+    flush(); 
   }
-  flush(); 
   return out.join("");
 }
 
