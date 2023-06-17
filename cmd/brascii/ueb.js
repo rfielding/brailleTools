@@ -404,27 +404,7 @@ function compressWord(w) {
     if(IsUpperCaseChar(middle[0])) {
       prefix = ",";
       middle = middle.toLowerCase()
-    } else {
-      if(IsDigit(middle[0])) {
-        prefix = "#";
-        // TODO
-      }
     }
-  }
-
-  // replace digit with number
-  var allDigits = true;
-  for(var i=0; i<middle.length; i++) {
-    if(!IsDigit(middle[i])) {
-      allDigits = false;
-    }
-  }
-  if(allDigits) {
-    v = "";
-    for(var i=0; i<middle.length; i++) {
-      v += findFirstFwd(middle[i],digits);
-    }
-    return [prefix,v]; 
   }
 
   // whole word substitutions
@@ -478,19 +458,42 @@ function compressWord2(w) {
   return (wd[0] + wd[1]);
 }
 
+dmap = {"1":"a","2":"b","3":"c","4":"d","5":"e","6":"f","7":"g","8":"h","9":"i","0":"j"};
 
 function translateString(w) {
-  out = [];
-  wordChars = [];
-  isReadingToken = false;
+  var out = [];
+  var wordChars = [];
+  var digits = [];
+  var isReadingNumber = false;
+  var isReadingToken = false;
   for(var i=0; i<w.length; i++) {
     var c = w[i];
-    var isReadingToken = (IsUpperCaseChar(c) || IsLowerCaseChar(c) || IsDigit(c));
+    var isReadingToken = (IsUpperCaseChar(c) || IsLowerCaseChar(c));
+    var isReadingNumber = IsDigit(c);
+    flush = function() {
+      if(wordChars.length > 0) {
+        var v = compressWord2(wordChars.join(""));
+        out.push(v);
+        wordChars = [];
+      }
+      if(digits.length > 0) {
+        var v = "#";
+        for(var i=0; i<digits.length; i++) {
+          v += dmap[digits[i]];
+        }
+        out.push(v);
+        digits = [];
+      }
+    };
     if(isReadingToken) {
       wordChars.push(c);
-    } else {
-      out.push(compressWord2(wordChars.join("")));
-      wordChars = [];
+    }
+    if(isReadingNumber) {
+      digits.push(c);
+    }
+
+    if(!isReadingToken && !isReadingNumber) {
+      flush();
       f = findFirstFwd(c, punctuation);
       if(f != null) {
         out.push(f);
@@ -499,9 +502,7 @@ function translateString(w) {
       }
     }
   }
-  if(wordChars.length > 0) {
-    out.push(compressWord2(wordChars.join("")));
-  }
+  flush(); 
   return out.join("");
 }
 
