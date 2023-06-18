@@ -54,13 +54,6 @@ function ToDigit(n) {
   return n;
 }
 
-// enums
-const upperCase = 1;
-const lowerCase = 2;
-const digit = 3;
-
-var brlWord = [];
-
 // I am transliterating this:
 // https://www.teachingvisuallyimpaired.com/uploads/1/4/1/2/14122361/ueb_braille_chart.pdf
 
