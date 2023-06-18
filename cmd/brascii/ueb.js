@@ -57,7 +57,7 @@ function ToDigit(n) {
 // I am transliterating this:
 // https://www.teachingvisuallyimpaired.com/uploads/1/4/1/2/14122361/ueb_braille_chart.pdf
 
-var digits = [
+const digitMap = [
   ["1","a"],
   ["2","b"],
   ["3","c"],
@@ -70,7 +70,7 @@ var digits = [
   ["0","j"],
 ];
   
-var punctuation = [
+const punctuation = [
   ["_",",_"],
   [",","1"],
   [".","4"],
@@ -102,7 +102,7 @@ var punctuation = [
   ["@","@a"]
 ]; 
 
-var aWordsigns = [
+const aWordsigns = [
   ["but", "b"],
   ["can", "c"],
   ["do", "d"],
@@ -128,7 +128,7 @@ var aWordsigns = [
   ["as", "z"]
 ];
 
-var sWordsigns = [
+const sWordsigns = [
   ["child","*"],
   ["shall","%"],
   ["this","?"],
@@ -137,7 +137,7 @@ var sWordsigns = [
   ["still","/"]
 ];
 
-var lWordsigns = [
+const lWordsigns = [
   ["be","2"],
   ["enough","5"],
   ["were","7"],
@@ -146,7 +146,7 @@ var lWordsigns = [
   ["was","0"]
 ];
 
-var sContractions = [
+const sContractions = [
   ["and","&"],
   ["for","="],
   ["of","("],
@@ -154,7 +154,7 @@ var sContractions = [
   ["with",")"]
 ];
 
-var sGroupsigns = [
+const sGroupsigns = [
   ["ch","*"],
   ["sh","%"],
   ["th","?"],
@@ -169,7 +169,7 @@ var sGroupsigns = [
   ["ing","+"]
 ];
 
-var lGroupsigns1 = [
+const lGroupsigns1 = [
   ["ea","1"],
   ["bb","2"],
   ["cc","3"],
@@ -177,7 +177,7 @@ var lGroupsigns1 = [
   ["gg","7"]
 ];
 
-var lGroupsigns2 = [
+const lGroupsigns2 = [
   ["be","2"],
   ["con","3"],
   ["dis","4"],
@@ -185,7 +185,7 @@ var lGroupsigns2 = [
   ["in","9"]
 ];
 
-var ilContractions = [
+const ilContractions = [
   ["day","\"d"],
   ["ever", "\"e"],
   ["father", "\"f"],
@@ -221,7 +221,7 @@ var ilContractions = [
   ["their", "_!"]
 ];
 
-var flGroupsigns = [
+const flGroupsigns = [
   ["ound",".d"],
   ["ance",".e"],
   ["sion",".n"],
@@ -236,7 +236,7 @@ var flGroupsigns = [
   ["ity",";y"]
 ];
 
-var sfWords = [
+const sfWords = [
   ["about","ab"],
   ["above","abv"],
   ["according","ac"],
@@ -446,7 +446,6 @@ function compressWord2(w) {
   return (wd[0] + wd[1]);
 }
 
-dmap = {"1":"a","2":"b","3":"c","4":"d","5":"e","6":"f","7":"g","8":"h","9":"i","0":"j"};
 
 function translateString(w) {
   var out = [];
@@ -459,7 +458,7 @@ function translateString(w) {
     } else if(digits.length > 0) {
       var v = "#";
       for(var i=0; i<digits.length; i++) {
-        v = v +  dmap[digits[i]];
+        v = v + findFirstFwd(digits[i],digitMap);
       }
       out.push(v);
     }
