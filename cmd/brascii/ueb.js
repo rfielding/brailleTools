@@ -533,7 +533,9 @@ function translateString(w) {
       if(isReadingToken) {
         if(wasReadingNumber) {
           flush();
-          out.push(";");
+          if(IsLowerCaseChar(c)) {
+            out.push(";");
+          }
         }
         wordChars.push(c);
       } else if(isReadingNumber) {
