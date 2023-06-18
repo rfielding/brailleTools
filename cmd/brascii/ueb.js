@@ -54,6 +54,63 @@ function ToDigit(n) {
   return n;
 }
 
+// Computer Braille is a permutation of locations 0-255, where
+// in practice, 1-127 are used for printable ASCII as a braille font.
+const brailleAsciiPattern = [
+  0b00000000, 0b00101110, 0b00010000, 0b00111100, 0b00101011, 0b00101001, 0b00101111, 0b00000100, 0b00110111, 0b00111110, 0b00100001, 0b00101100, 0b00100000, 0b00100100, 0b00101000, 0b00001100,
+  0b00110100, 0b00000010, 0b00000110, 0b00010010, 0b00110010, 0b00100010, 0b00010110, 0b00110110, 0b00100110, 0b00010100, 0b00110001, 0b00110000, 0b00100011, 0b00111111, 0b00011100, 0b00111001,
+  0b00001000, 0b00000001, 0b00000011, 0b00001001, 0b00011001, 0b00010001, 0b00001011, 0b00011011, 0b00010011, 0b00001010, 0b00011010, 0b00000101, 0b00000111, 0b00001101, 0b00011101, 0b00010101,
+  0b00001111, 0b00011111, 0b00010111, 0b00001110, 0b00011110, 0b00100101, 0b00100111, 0b00111010, 0b00101101, 0b00111101, 0b00110101, 0b00101010, 0b00110011, 0b00111011, 0b00011000, 0b00111000,
+];
+
+// When looking at 0x20 through 0x5F as 6-dot, mask off dot 7 first,
+// as there are only upper-case letters in braille ascii
+const braillePerm = new Array(256);  
+const asciiPerm = new Array(256);
+
+function brailleInit() {
+  const present = new Array(256);
+
+  // Copy in the standard braille ascii patern
+  for(var i = 0; i < 64; i++) {
+    braillePerm[0x20+i] = brailleAsciiPattern[i]
+  }
+  // Flip the case of the alphabet
+  for(var i = 0x40; i <= 0x60; i++) {
+    braillePerm[i] = braillePerm[i] ^ 0x40
+  }
+  // Copy lower half of standard to cover control codes
+  for(var i = 0; i < 32; i++) {
+    braillePerm[i] = (braillePerm[i+0x20]) ^ 0x40
+  }
+  // Copy upper half of standard to cover upper case
+  for(var i = 0; i < 32; i++) {
+    braillePerm[0x60+i] = braillePerm[0x40+i] ^ 0x40
+  }
+  // Swap 124 and 127 the underscore and delete,
+  // a strange exception logically, but I see it in real terminals
+  var braillePermTmp = braillePerm[0x7F]
+  braillePerm[0x7F] = braillePerm[0x5F]
+  braillePerm[0x5F] = braillePermTmp
+
+  // Duplicated it all in high bits
+  for(var i = 0; i < 128; i++) {
+    braillePerm[0x80+i] = braillePerm[i] ^ 0x80
+  }
+  // Reverse mapping
+  for(var i = 0; i < 256; i++) {
+    asciiPerm[braillePerm[i]] = i
+    present[i]=1;
+  }
+  // Panic if codes are missing or duplicated
+  for(var i = 0; i < 256; i++) {
+    if(present[i] != 1) {
+      console.log("braille table inconsistency at %d", i);
+    }
+  }
+}
+
+
 // I am transliterating this:
 // https://www.teachingvisuallyimpaired.com/uploads/1/4/1/2/14122361/ueb_braille_chart.pdf
 
@@ -508,8 +565,38 @@ var rl = readline.createInterface({
   terminal: false
 });
 
+//
+// Do main work here
+//
+
+// Init and process args
+brailleInit();
+var brlFont = false;
+var decode = false;
+for(var i=2; i < process.argv.length; i++) {
+  if(process.argv[i] == "--brlFont") {
+    brlFont = true;
+  }
+  if(process.argv[i] == "--decode") {
+    decode = true;
+  }
+}
+
 rl.on('line', function (line) {
-  console.log(translateString(line));
+  if(decode) {
+    console.log("TODO: implement braille decode");
+  } else {
+    var brl = translateString(line);
+    var out = [];
+    for(var i=0; i<brl.length; i++) {
+      if(brlFont) {
+        out.push(String.fromCharCode(braillePerm[brl.charCodeAt(i)]+0x2800));
+      } else {
+        out.push(brl[i]);
+      }
+    }
+    console.log(out.join(""));
+  }
 });
 
 
