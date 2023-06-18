@@ -442,7 +442,7 @@ function compressWord(w) {
 }
 
 function compressWord2(w) {
-  wd = compressWord(w);
+  var wd = compressWord(w);
   return (wd[0] + wd[1]);
 }
 
