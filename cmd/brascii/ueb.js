@@ -504,11 +504,12 @@ function compressWord2(w) {
 }
 
 
+// ugh... an unbalanced quote in a doc can get out of control
+var isQuoting = false;
 function translateString(w) {
   var out = [];
   var wordChars = [];
   var digits = [];
-  var isQuoting = false;
 
   var flush = function(j) {
     if(wordChars.length > 0) {
