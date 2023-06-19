@@ -152,11 +152,11 @@ const punctuation = [
   ["*","\"8"],
   ["/","\"/"],
   ["=","\"7"],
-  ["?","@s"],
   ["%",".0"],
   ["#","_#"],
-  ["&","@&"],
-  ["@","@a"]
+  ["&","`&"],
+  ["@","`a"],
+  ["$","`s"]
 ]; 
 
 const aWordsigns = [
@@ -513,6 +513,7 @@ function translateString(w) {
   var flush = function(j) {
     if(wordChars.length > 0) {
       out.push(compressWord2(wordChars.join("")));
+      wordChars = [];
     } else if(digits.length > 0) {
       var v = "#";
       if(w.length > 2) {
@@ -528,9 +529,8 @@ function translateString(w) {
         v = v + findFirstFwd(digits[i],digitMap);
       }
       out.push(v);
+      digits = [];
     }
-    wordChars = [];
-    digits = [];
   };
 
   if(w.length > 0) {
