@@ -510,11 +510,20 @@ function translateString(w) {
   var digits = [];
   var isQuoting = false;
 
-  flush = function() {
+  var flush = function(j) {
     if(wordChars.length > 0) {
       out.push(compressWord2(wordChars.join("")));
     } else if(digits.length > 0) {
       var v = "#";
+      if(w.length > 2) {
+        j--;
+        while(j>0 && IsDigit(w[j])) {
+          j--;
+        } 
+        if(j > 1 && (j+1)<w.length && w[j] == "." && IsDigit(w[j+1]) && IsDigit(w[j-1])) {
+          v = "";
+        }
+      }
       for(var i=0; i<digits.length; i++) {
         v = v + findFirstFwd(digits[i],digitMap);
       }
@@ -533,7 +542,7 @@ function translateString(w) {
       var isReadingNumber = IsDigit(c);
       if(isReadingToken) {
         if(wasReadingNumber) {
-          flush();
+          flush(i);
           if(IsLowerCaseChar(c)) {
             out.push(";");
           }
@@ -541,11 +550,11 @@ function translateString(w) {
         wordChars.push(c);
       } else if(isReadingNumber) {
         if(wasReadingToken) {
-          flush();
+          flush(i);
         }
         digits.push(c);
       } else {
-        flush();
+        flush(i);
         var f = findFirstFwd(c, punctuation);
         if(f != null) {
           out.push(f);
@@ -567,7 +576,7 @@ function translateString(w) {
       wasReadingToken = isReadingToken;
       wasReadingNumber = isReadingNumber;
     }
-    flush(); 
+    flush(i); 
   }
   return out.join("");
 }
