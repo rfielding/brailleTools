@@ -508,6 +508,7 @@ function translateString(w) {
   var out = [];
   var wordChars = [];
   var digits = [];
+  var isQuoting = false;
 
   flush = function() {
     if(wordChars.length > 0) {
@@ -548,8 +549,18 @@ function translateString(w) {
         var f = findFirstFwd(c, punctuation);
         if(f != null) {
           out.push(f);
+        } else if(c == " " || c == "\r" || c == "\n" || c == "\t") {
+            out.push(c);
+        } else if(c == "\"") {
+          if(isQuoting) {
+            out.push("0");
+            isQuoting = false;
+          } else {
+            out.push("8");
+            isQuoting = true;
+          }
         } else {
-          // passing it off literally is bad
+          // Is there anything to ignore here?
           out.push(c);
         }
       }
