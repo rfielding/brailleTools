@@ -512,7 +512,17 @@ function translateString(w) {
 
   var flush = function(j) {
     if(wordChars.length > 0) {
-      out.push(compressWord2(wordChars.join("")));
+      var v = "";
+      if(w.length > 2) {
+        j--;
+        while(j>0 && IsChar(w[j])) {
+          j--;
+        } 
+        if(j > 1 && (j+1)<w.length && w[j] == "." && IsChar(w[j+1]) && IsDigit(w[j-1])) {
+          v = ";";
+        }
+      } 
+      out.push(v + compressWord2(wordChars.join("")));
       wordChars = [];
     } else if(digits.length > 0) {
       var v = "#";
