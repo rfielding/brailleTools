@@ -584,11 +584,11 @@ var rl = readline.createInterface({
 
 // Init and process args
 brailleInit();
-var brlFont = false;
+var asText = false;
 var decode = false;
 for(var i=2; i < process.argv.length; i++) {
-  if(process.argv[i] == "--brlFont") {
-    brlFont = true;
+  if(process.argv[i] == "--asText") {
+    asText = true;
   }
   if(process.argv[i] == "--decode") {
     decode = true;
@@ -602,10 +602,10 @@ rl.on('line', function (line) {
     var brl = translateString(line);
     var out = [];
     for(var i=0; i<brl.length; i++) {
-      if(brlFont) {
-        out.push(String.fromCharCode(braillePerm[brl.charCodeAt(i)]+0x2800));
-      } else {
+      if(asText) {
         out.push(brl[i]);
+      } else {
+        out.push(String.fromCharCode(braillePerm[brl.charCodeAt(i)]+0x2800));
       }
     }
     console.log(out.join(""));
