@@ -1,3 +1,6 @@
+/*
+cat genesis.txt | node ueb.js | lou_translate -b en-ueb-g2.ctb | more
+ */
 let fs = require('fs')
 let readline = require('readline')
 
