@@ -331,7 +331,7 @@ const sfWords = [
   ["declare","dcl"],
   ["declaring","dclg"],
   ["either","ei"],
-  ["first","f*"],
+  ["first","f/"],
   ["friend","fr"],
   ["good","gd"],
   ["great","grt"],
