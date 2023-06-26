@@ -1,4 +1,5 @@
 /*
+echo "the second day." | lou_translate -f unicode.dis,en-ueb-g2.ctb
 cat genesis.txt | node ueb.js | lou_translate -b en-ueb-g2.ctb | more
  */
 let fs = require('fs')
