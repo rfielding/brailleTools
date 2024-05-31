@@ -17,16 +17,16 @@ import (
 //
 // Note that in this table, you can read the braille directly:
 // using dot number:
-//            0b01011001
-//              87654321  .. the braille dots... imagine re-laid out:
 //
-//               14
-//               25
-//               36
-//               78
+//	0b01011001
+//	  87654321  .. the braille dots... imagine re-laid out:
+//
+//	   14
+//	   25
+//	   36
+//	   78
 //
 // by looking at it sideways.  after some practice, you can read dots from binary.
-//
 var brailleAsciiPattern = []int{
 	0b00000000, 0b00101110, 0b00010000, 0b00111100, 0b00101011, 0b00101001, 0b00101111, 0b00000100, 0b00110111, 0b00111110, 0b00100001, 0b00101100, 0b00100000, 0b00100100, 0b00101000, 0b00001100,
 	0b00110100, 0b00000010, 0b00000110, 0b00010010, 0b00110010, 0b00100010, 0b00010110, 0b00110110, 0b00100110, 0b00010100, 0b00110001, 0b00110000, 0b00100011, 0b00111111, 0b00011100, 0b00111001,
@@ -118,67 +118,6 @@ var names = map[int]string{
 	0x1F: "US",
 	0x7C: "\\|",
 	0x7F: "DEL",
-}
-
-var contractions = map[int]string{
-	0x21: "the",
-	0x23: "Num",
-	0x24: "ed",
-	0x25: "sh",
-	0x26: "and",
-	0x27: "'",
-	0x28: "of",
-	0x29: "with",
-	0x2A: "ch",
-	0x2B: "ing",
-	0x2D: "-",
-	0x2F: "st",
-	0x32: ";",
-	0x33: ":",
-	0x34: ".",
-	0x35: "en",
-	0x36: "!",
-	0x38: "?",
-	0x39: "in",
-	0x3A: "wh",
-	0x3C: "gh",
-	0x3D: "for",
-	0x3E: "ar",
-	0x3F: "th",
-	0x42: "but",
-	0x43: "can",
-	0x44: "do",
-	0x45: "every",
-	0x46: "from",
-	0x47: "go",
-	0x48: "have",
-	0x4A: "just",
-	0x4B: "knowledge",
-	0x4C: "like",
-	0x4D: "more",
-	0x4E: "not",
-	0x50: "people",
-	0x51: "quite",
-	0x52: "rather",
-	0x53: "so",
-	0x54: "that",
-	0x55: "us",
-	0x56: "very",
-	0x57: "will",
-	0x58: "it",
-	0x59: "you",
-	0x5A: "as",
-	0x5B: "ow",
-	0x5C: "ou",
-	0x5D: "er",
-}
-
-func contractionOf(v int) string {
-	n, ok := contractions[v]
-	if ok {
-		return n
-	}
-	return ""
 }
 
 func findName(v int) string {
@@ -316,7 +255,7 @@ func main() {
 						c = (braillePerm[v] & 0x3F) + 0x2800
 					} else {
 						c = braillePerm[v] + 0x2800
-		    			}
+					}
 					fmt.Printf("%s", string(c))
 					continue
 				}
