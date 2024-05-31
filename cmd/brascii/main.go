@@ -164,10 +164,32 @@ func brailleTable(isGithub bool) {
 	fmt.Printf("\n")
 }
 
+func flatMappingShow() {
+	fmt.Printf("ascii_to_brl={\n")
+	for i := 0; i < 16; i++ {
+		for j := 0; j < 16; j++ {
+			fmt.Printf("0x%02x", braillePerm[i*16+j])
+			fmt.Printf(",")
+		}
+		fmt.Printf("\n")
+	}
+	fmt.Printf("}\n")
+	fmt.Printf("brl_to_ascii={\n")
+	for i := 0; i < 16; i++ {
+		for j := 0; j < 16; j++ {
+			fmt.Printf("0x%02x", asciiPerm[i*16+j])
+			fmt.Printf(",")
+		}
+		fmt.Printf("\n")
+	}
+	fmt.Printf("}\n")
+}
+
 // Byte by byte translation to braille
 func main() {
 	tabSize := flag.Int("tabSize", 8, "size of a tab in spaces. zero means literal.")
 	table := flag.Bool("table", false, "generate a table")
+	flatMapping := flag.Bool("flatMapping", false, "dump a flattened permutation of ASCII 0x00+[0-255] to braille 0x2800[0-255]")
 	tableGithub := flag.Bool("table-github", false, "generate a table for rendering")
 	sixDot := flag.Bool("sixdot", false, "decode as 6-dot ascii braille")
 	decode := flag.Bool("decode", false, "decode braile to ascii binary")
@@ -180,6 +202,10 @@ func main() {
 		os.Exit(0)
 	}
 	brailleInit()
+	if *flatMapping {
+		flatMappingShow()
+		os.Exit(0)
+	}
 	if *table {
 		brailleTable(false)
 		os.Exit(0)
