@@ -259,9 +259,6 @@ func main() {
 				break
 			}
 			if err != nil {
-				if err == io.EOF {
-					break
-				}
 				panic(err)
 			}
 			if l == 0 {
@@ -290,7 +287,11 @@ func main() {
 			}
 			v := int(b[0])
 			// Encode bytes to braille
-			if *isBinary == false {
+			// If it's binary, then do not touch at all
+			if *isBinary == true {
+				fmt.Printf("%c", braillePerm[v]+0x2800)
+				continue
+			} else {
 				if v == '\t' && *tabSize > 0 {
 					for i := 0; i < *tabSize; i++ {
 						fmt.Printf(" ")
@@ -304,14 +305,22 @@ func main() {
 				if v == '\r' && *keepCR == false {
 					continue
 				}
+				if v == ' ' {
+					fmt.Printf(" ")
+					continue
+				}
+				// if 6-dot, then assume lower case ascii
+				{
+					var c int
+					if *sixDot {
+						c = (braillePerm[v] & 0x3F) + 0x2800
+					} else {
+						c = braillePerm[v] + 0x2800
+		    			}
+					fmt.Printf("%s", string(c))
+					continue
+				}
 			}
-			var c int
-			if *sixDot {
-				c = (braillePerm[v] & 0x3F) + 0x2800
-			} else {
-				c = braillePerm[v] + 0x2800
-			}
-			fmt.Printf("%s", string(c))
 		}
 	}
 }
