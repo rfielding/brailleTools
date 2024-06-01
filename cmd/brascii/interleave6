@@ -1,0 +1,7 @@
+#!/bin/bash
+
+while IFS= read -r line
+do
+  echo "$line"
+  echo "$line" | lou_translate --forward unicode.dis,en-ueb-g2.ctb
+done

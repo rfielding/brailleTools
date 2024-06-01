@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "liblouis": "^0.4.0",
+    "liblouis-build": "github:liblouis/js-build"
+  }
+}
