@@ -1,10 +1,10 @@
 ## Braille Binary
 
-On computers, 8-dot Braille is the standard on some Displays such as the Orbit line of products. LibLouis is effectively the standard for Braille, as the description of the standard being ambiguous. The 8-dot Braille is typically terribly documented. UEB should have been defined as a Javascript function that does the translation. I am not sure if perfect forward and backwards is even possible with UEB. But with this implementation, the ASCII bytes are a perfect permutation of numbers 0-255, such that an MD5 checksum of the original file is always the same as a forward-then-backwards 8-dot computer Braille translation. This is really important. The 8-dot computer Braille translations are very trivial. The forward and backwards translations of UEB are quite difficult; certainly too hard for most sighted web developers to learn.
+On computers, 8-dot Braille is the standard on some displays such as the Orbit line of products. LibLouis is effectively the standard for Braille, as the description of the standard are ambiguous. The 8-dot Computer Braille standard is typically terribly documented. UEB should have been defined as a Javascript function that does the translation. I am not sure if perfect forward and backwards is even possible with UEB. But with this implementation, the ASCII bytes are a perfect permutation of numbers 0-255, such that an MD5 checksum of the original file is always the same as a forward-then-backwards 8-dot computer Braille translation. This is really important. The 8-dot computer Braille translations are very trivial. The forward and backwards translations of UEB are quite difficult; certainly too hard for most sighted web developers to learn.
 
 Here are two examples:
 
-This is the standard UEB, which claims to be good enough to use in computing. I claim that this is a vary hard standard to learn, yet in the end, it is not a byte-exact standard. You must have a byte-exact standard if you want it to be computer-compatible in a deep way.
+This is the standard UEB, which claims to be good enough to use in computing. I claim that this is a very hard standard to learn, yet in the end, it is not a byte-exact standard. You must have a byte-exact standard if you want it to be computer-compatible in a deep way.
 
 If you have LibLouis installed, then you can practice UEB2 by putting ASCII texts through LibLouis if you have installed it on your computer, and have `lou_translate` in your path. This is standard English Braille.
 
