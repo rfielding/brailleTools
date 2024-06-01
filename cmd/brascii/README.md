@@ -6,9 +6,13 @@ Here are two examples:
 
 This is the standard UEB, which claims to be good enough to use in computing. I claim that this is a vary hard standard to learn, yet in the end, it is not a byte-exact standard. You must have a byte-exact standard if you want it to be computer-compatible in a deep way.
 
+If you have LibLouis installed, then you can practice UEB2 by putting ASCII texts through LibLouis if you have installed it on your computer, and have `lou_translate` in your path. This is standard English Braille.
+
 ![interleave6.png](interleave6.png)
 
 Because 8-dot computer braille is just a permutation, it is literally exactly forward and reverse identical. It is even exact to the point that even null chars, literal tabs (ie: not expanded to spaces), literal braille space (ie: so it can be rendered with an outline and exact cell size) can be preserved with the "-binary" flag. And by default, the MD5 sum of plaintext and forward-backward processed text remains the same. An interesting effect of this is that you can just learn a few new characters and read binary files better than a sighted person can.
+
+This is the simplified 8-dot Computer Braille. In spite of the fact that dot7 use is rather rare, it is necessary; because in practice, you need more than 64 characters for any faithful representation of printable 7-bit ASCII. Sighted people can learn this Braille variant quickly, and it is byte-exact.
 
 ![interleave8.png](interleave8.png)
 
